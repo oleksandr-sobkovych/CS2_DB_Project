@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 
 APP = Flask(__name__)
 
@@ -23,16 +23,21 @@ def create_author():
 @APP.route("/author_login", methods=["POST"])
 def login_author():
     """Login page for authors"""
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    print(email)
+    print(password)
+
     # get name, last_name, password params
     # create_author_account(name, surname, password)
-    return jsonify({'status': 'ok'})
+    return redirect("/author_account")
 
 # @APP.route("/author_signup", methods=["GET", "POST"])
 # def author_signup():
 #     """Page for author signing up"""
 #     return render_template("author_signup.html")
-
-@APP.route("/author_account", methods=["GET", "POST"])
+@APP.route("/author_account", methods=["GET"])
 def author_account():
     """Page for choosing style and then seeing possible tasks
 
@@ -40,6 +45,13 @@ def author_account():
     !!!Seeing possible tasks
     !!!Choose many styles"""
     return render_template("author_account.html")
+
+
+@APP.route("/author_account", methods=["POST"])
+def author_account_post():
+    style = request.form.get("style")
+    print(style)
+    return redirect("/manage_task")
 
 # @APP.route("/task", methods=["GET", "POST"])
 # def author_signup():
@@ -76,10 +88,18 @@ def discount():
 #     """Finding customer for order"""
 #     return render_template("get_customer.html")
 #
-@APP.route("/one_day_discount", methods=["GET", "POST"])
+@APP.route("/one_day_discount", methods=["GET"])
 def one_day_discount():
     """Page for creating 1 day discount"""
     return render_template("one_day_discount.html")
+
+@APP.route("/one_day_discount", methods=["POST"])
+def one_day_discount_post():
+    from_ = request.form.get("from")
+    to_ = request.form.get("to")
+    print (from_)
+    print (to_)
+    return redirect("/finish_author")
 #
 # @APP.route("/create_order", methods=["GET", "POST"])
 # def create_order():
