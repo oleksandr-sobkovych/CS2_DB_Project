@@ -17,6 +17,7 @@ body {
 
 h1 {
 	color: rgb(255, 255, 255);
+	text-align: center;
 	font-weight: bold;
 	margin: 10;
 }
@@ -37,42 +38,31 @@ span {
 	font-size: 12px;
 }
 
-
-/* a {
-	border-radius: 20px;
-	border: 1px solid rgb(36, 36, 36);
-	background-color: rgb(255, 255, 255);
-	color: #292929;
-	font-size: 12px;
-	font-weight: bold;
-	padding: 12px 100px;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	transition: transform 80ms ease-in;
-} */
-
-/* a:active {
-	transform: scale(0.95);
+.top-section {
+    position: relative;
+    top: 25%;
+    left: 0;
+    right: 0;
+	align-items: center;
 }
-
-a:focus {
-	outline: none;
-} */
 
 
 /* Start Route -- Route Menu */
 .author_login{
-	position:absolute;
-	top: 55%;
+	position: absolute;
+	top: 50%;
+	left: 25%;
+
+	
 	padding:0.3em 1.2em;
 	margin:0 0.3em 0.3em 0;
 	border-radius:2em;
 	box-sizing: border-box;
 	text-decoration:none;
 	font-size: 20px;
-	font-family:'Nunito',sans-serif;
-	font-weight:300;
+	font-weight:500;
 	color:#000000;
+	width: 370px;
 	/* background-color:#4eb5f1; */
 	background: #ffffff;
 	text-align:center;
@@ -81,16 +71,21 @@ a:focus {
   /* Cancel -- Route Menu */
 .customer_login{
 	position: relative;
-	top: 300%;
+	top: 50%;
+	left: 25%;
+
+	top: 50px;
 	padding:0.3em 1.2em;
 	margin:0 0.3em 0.3em 0;
 	border-radius:2em;
 	box-sizing: border-box;
 	text-decoration:none;
 	font-size: 20px;
-	font-family:'Nunito',sans-serif;
-	font-weight:300;
+	
+	font-weight:500;
 	color:#000000;
+	width: 375px;
+	
 	/* background-color:#4eb5f1; */
 	background: #ffffff;
 	text-align:center;
@@ -130,7 +125,6 @@ input {
 }
 
 .form-container {
-	position: absolute;
 	top: 0;
 	height: 100%;
 	transition: all 0.6s ease-in-out;

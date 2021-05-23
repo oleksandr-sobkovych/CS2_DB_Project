@@ -18,7 +18,8 @@ body {
 h1 {
 	color: rgb(255, 255, 255);
 	font-weight: bold;
-	margin: 10;
+	text-align: center;
+	/* margin: 10; */
 }
 
 h2 {
@@ -63,7 +64,7 @@ a:focus {
 /* Start Route -- Route Menu */
 .one_day_discount{
 	position:absolute;
-	top: 55%;
+	top: 35%;
 	padding:0.3em 1.2em;
 	margin:0 0.3em 0.3em 0;
 	border-radius:2em;
@@ -81,7 +82,8 @@ a:focus {
   /* Cancel -- Route Menu */
 .multiple_days_discount{
 	position: relative;
-	top: 300%;
+	top: 100%;
+	left: -8%;
 	padding:0.3em 1.2em;
 	margin:0 0.3em 0.3em 0;
 	border-radius:2em;

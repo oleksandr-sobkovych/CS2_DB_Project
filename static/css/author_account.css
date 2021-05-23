@@ -67,6 +67,11 @@ button:focus {
 	outline: none;
 }
 
+.style {
+	width:150px;
+	text-align: center;
+	font-size: 20px;
+}
 
 form {
 	background-color: rgb(44, 44, 44);

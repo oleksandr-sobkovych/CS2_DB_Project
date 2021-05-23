@@ -63,7 +63,8 @@ a:focus {
 /* Start Route -- Route Menu */
 .discount{
 	position:absolute;
-	top: 55%;
+	left: -22%;
+	top: 35%;
 	padding:0.3em 1.2em;
 	margin:0 0.3em 0.3em 0;
 	border-radius:2em;
@@ -73,6 +74,7 @@ a:focus {
 	font-family:'Nunito',sans-serif;
 	font-weight:300;
 	color:#000000;
+	width: 250px;
 	/* background-color:#4eb5f1; */
 	background: #ffffff;
 	text-align:center;
@@ -81,7 +83,7 @@ a:focus {
   /* Cancel -- Route Menu */
 .team{
 	position: relative;
-	top: 300%;
+	top: 100%;
 	padding:0.3em 1.2em;
 	margin:0 0.3em 0.3em 0;
 	border-radius:2em;

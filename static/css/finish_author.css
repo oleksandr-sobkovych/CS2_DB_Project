@@ -38,6 +38,24 @@ span {
 }
 
 
+/* Start Route -- Route Menu */
+.finish{
+	position:absolute;
+	top: 20%;
+	left: 10%;
+	padding:0.3em 1.2em;
+	margin:0 0.3em 0.3em 0;
+	border-radius:2em;
+	box-sizing: border-box;
+	text-decoration:none;
+	font-size: 20px;
+	font-family:'Nunito',sans-serif;
+	font-weight:300;
+	color:#000000;
+	/* background-color:#4eb5f1; */
+	background: #ffffff;
+	text-align:center;
+  }
 
 
 
@@ -80,7 +98,8 @@ input {
 }
 
 .sign-in-container {
-	left: 37%;
+	top: 25%;
+	left: 40%;
 	align-items: center;
 	z-index: 2;
 }
