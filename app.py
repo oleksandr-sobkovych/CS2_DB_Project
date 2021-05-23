@@ -1,101 +1,115 @@
-#from db_interaction import DBInteraction
-from sqlalchemy.orm import sessionmaker
-from db_connect import engine
-from classes import Author, MessageStyle, Discount, Customer
-from datetime import datetime, timedelta
+from flask import Flask, render_template, request, jsonify
 
-conn = engine.connect()
-Session = sessionmaker(bind=engine)
-session = Session()
+APP = Flask(__name__)
 
-#interaction = DBInteraction()
+APP.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+@APP.route("/")
+def index():
+    """Start page (choose author or customer)"""
+    return render_template("index.html")
 
-def create_author_account(name, surname, password):
-    cur_author = Author(name, surname, password)
-    session.add(cur_author)
-    session.commit()
+# @APP.route("/login_or_create_author", methods=["GET", "POST"])
+# def login_or_create_author():
+#     """Choose login or create an new account as author"""
+#     return render_template("login_or_create_author.html")
 
-    return cur_author
-
-
-def create_customer(name, surname, password):
-    cur_customer = Customer(name, surname, password)
-    session.add(cur_customer)
-    session.commit()
-
-    return cur_customer
+@APP.route("/author_login", methods=["GET"])
+def create_author():
+    """Login page for authors"""
+    return render_template("author_login.html")
 
 
-def get_author(id):
-    return session.query(Author).get(id)
+@APP.route("/author_login", methods=["POST"])
+def login_author():
+    """Login page for authors"""
+    # get name, last_name, password params
+    # create_author_account(name, surname, password)
+    return jsonify({'status': 'ok'})
 
+# @APP.route("/author_signup", methods=["GET", "POST"])
+# def author_signup():
+#     """Page for author signing up"""
+#     return render_template("author_signup.html")
 
-def get_author_by_name(first_name, last_name):
-    return session.query(Author) \
-        .filter(Author.first_name == first_name and
-                Author.last_name == last_name).first()
+@APP.route("/author_account", methods=["GET", "POST"])
+def author_account():
+    """Page for choosing style and then seeing possible tasks
 
+    TO DO:
+    !!!Seeing possible tasks
+    !!!Choose many styles"""
+    return render_template("author_account.html")
 
-def add_skill(author_id, style_names):
-    author = get_author(author_id)
+# @APP.route("/task", methods=["GET", "POST"])
+# def author_signup():
+#     """Page for author signing up"""
+#     return render_template("author_signup.html")
 
-    for style in style_names:
-        # select style from the database
-        selected_style = session.query(MessageStyle) \
-            .filter(MessageStyle.style_name == style).all()
+@APP.route("/manage_task", methods=["GET", "POST"])
+def manage_task():
+    """Manage page for authors (creating discount or team)"""
+    return render_template("manage_task.html")
 
-        if not selected_style:
-            # insert this style if it is absent
-            selected_style = MessageStyle(style)
-            session.add(selected_style)
-        else:
-            # select first occurance
-            selected_style = selected_style[0]
+@APP.route("/discount", methods=["GET", "POST"])
+def discount():
+    """Page for creating discount"""
+    return render_template("discount.html")
 
-        # back populate data
-        author.styles.append(selected_style)
+# @APP.route("/create_customer", methods=["GET", "POST"])
+# def create_customer():
+#     """Creating customer page"""
+#     return render_template("create_customer.html")
+#
+# @APP.route("/add_styles", methods=["GET", "POST"])
+# def add_style():
+#     """Adding style"""
+#     return render_template("add_style.html")
+#
+# @APP.route("/add_social_media", methods=["GET", "POST"])
+# def add_style():
+#     """Adding media"""
+#     return render_template("add_social_media.html")
+#
+# @APP.route("/get_customer", methods=["GET", "POST"])
+# def get_customer():
+#     """Finding customer for order"""
+#     return render_template("get_customer.html")
+#
+@APP.route("/one_day_discount", methods=["GET", "POST"])
+def one_day_discount():
+    """Page for creating 1 day discount"""
+    return render_template("one_day_discount.html")
+#
+# @APP.route("/create_order", methods=["GET", "POST"])
+# def create_order():
+#     """Creating order"""
+#     return render_template("create_order.html")
+#
+# @APP.route("/create_multiple_days_discount", methods=["GET", "POST"])
+# def create_multiple_days_discount():
+#     """Creating discount"""
+#     return render_template("create_multiple_days_discount.html")
+#
+# @APP.route("/orders", methods=["GET", "POST"])
+# def orders():
+#     """Information about orders"""
+#     return render_template("orders.html")
+#
+# @APP.route("/give_access", methods=["GET", "POST"])
+# def give_access():
+#     """Giving access"""
+#     return render_template("give_access.html")
+#
+# @APP.route("/deny_access", methods=["GET", "POST"])
+# def deny_access():
+#     """Denying access"""
+#     return render_template("deny_access.html")
+#
+@APP.route("/finish_author", methods=["GET", "POST"])
+def finish_author():
+    """Result page for discount creating"""
+    return render_template("finish_author.html")
 
-    session.commit()
-
-
-def create_one_day_discount(author_id, style_id, amount, date_start):
-    author = get_author(author_id)
-
-    discount = Discount(author_id, style_id, amount, date_start, date_start +
-                        timedelta(hours=1))
-
-    session.add(discount)
-    session.commit()
-
-
-def create_multiple_days_discount(author_id, style_id, amount, date_start,
-                                  date_end):
-    author = get_author(author_id)
-
-    discount = Discount(author_id, style_id, amount, date_start, date_end)
-
-    session.add(discount)
-    session.commit()
-
-
-def execute():
-    result = engine.execute("""
-        SELECT a.author_id AS id, CONCAT(a.first_name, ' ', a.last_name) AS full_name FROM Author a
-        INNER JOIN AuthorTeam ta ON ta.author_id = a.author_id
-        INNER JOIN Team t ON t.team_id = ta.team_id
-        INNER JOIN PlacedOrder po ON po.team_id = t.team_id
-        WHERE po.created_date >= '2021-01-01'		-- T
-        AND po.created_date <  '2021-06-01'		-- F
-        GROUP BY id
-        HAVING COUNT(DISTINCT po.account_id) >= 2	-- N
-        ORDER BY full_name;
-    """).all()
-    print(result)
-
-
-if __name__ == '__main__':
-    # create_author_account('1name', '1lname', '1pass')
-    # print(get_author(12).first_name)
-    # add_skill(12, ['assertive', 'hey'])
-    execute()
+if __name__ == "__main__":
+    APP.run(debug=True)
