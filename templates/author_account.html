@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/author_account.css">
+    </head>
+
+
+
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            <form action="">
+                <h1>HI</h1>
+
+                <h2>Choose a Style:</h2>
+
+                <select name="style" id="style">
+                    <option value="Happy">Happy</option>
+                    <option value="Political">Political</option>
+                    <option value="Official">Official</option>
+                </select>
+                
+                <nav>
+                    <!-- <input type="submit" value="Submit"> -->
+                    <a href="manage_task" class="ghost" id="Submit">Submit</a>
+                </nav>
+            </form>
+        </div>
+    </div>
+
+
+    <body>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/create_author.js') }}"></script>
+
+    </body>
+</html>

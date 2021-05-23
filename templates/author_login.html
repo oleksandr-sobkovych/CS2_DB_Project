@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/author_login.css">
+    </head>
+
+
+
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            <form action="./app">
+                <h1>Sign in</h1>
+                <input type="email" placeholder="Email" />
+                <input type="password" placeholder="Password" />
+                <nav>
+                    <a href="author_account" class="ghost" id="signIn">Sign In</a>
+                </nav>
+            </form>
+        </div>
+    </div>
+
+
+    <body>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>
+
+    </body>
+</html>
