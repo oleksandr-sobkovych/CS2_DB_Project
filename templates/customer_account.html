@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../style/author_account.css">
+        <link rel="stylesheet" href="../static/css/author_account.css">
     </head>
 
 
@@ -21,7 +21,7 @@
                 
                 <nav>
                     <!-- <input type="submit" value="Submit"> -->
-                    <a href="user_space.html" class="ghost" id="Submit">Submit</a>
+                    <a href="user_space" class="ghost" id="Submit">Submit</a>
                 </nav>
             </form>
         </div>
@@ -29,7 +29,7 @@
 
 
     <body>
-    <script src="author_login.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>
 
     </body>
 </html>

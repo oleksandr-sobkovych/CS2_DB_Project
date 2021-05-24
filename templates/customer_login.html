@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../style/author_login.css">
+        <link rel="stylesheet" href="../static/css/author_login.css">
     </head>
 
 
 
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form action="./app">
+            <form method="POST">
                 <h1>Sign in</h1>
                 <input type="email" placeholder="Email" />
                 <input type="password" placeholder="Password" />
                 <nav>
-                    <a href="customer_account.html" class="ghost" id="signIn">Sign In</a>
+                    <input type="submit" value="Submit" >
+                    <!--<a href="customer_account" class="ghost" id="signIn">Sign In</a>-->
                 </nav>
             </form>
         </div>
@@ -21,7 +22,8 @@
 
 
     <body>
-    <script src="author_login.js"></script>
+
+    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>-->
 
     </body>
 </html>

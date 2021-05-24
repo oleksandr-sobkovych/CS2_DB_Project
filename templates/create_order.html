@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../style/author_login.css">
+        <link rel="stylesheet" href="../static/css/author_login.css">
     </head>
 
 
 
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form action="./app">
+            <form method="POST">
                 <h1>Create Order</h1>
-                <input  placeholder="Message Style" />
-                <input  placeholder="Team Name" />
-                <input  placeholder="Social Media" />
+                <input  placeholder="Message Style" name="style"/>
+                <input  placeholder="Team Name" name="team"/>
+                <input  placeholder="Social Media" name="media"/>
                 <nav>
-                    <a href="finish_author.html" class="ghost" id="signIn">Create</a>
+                    <input type="submit" value="Submit" >
+                    <!--<a href="finish_author" class="ghost" id="signIn">Create</a>-->
                 </nav>
             </form>
         </div>
@@ -22,7 +23,7 @@
 
 
     <body>
-    <script src="author_login.js"></script>
+    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>-->
 
     </body>
 </html>

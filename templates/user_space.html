@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../style/manage_task.css">
+        <link rel="stylesheet" href="../static/css/manage_task.css">
     </head>
 
 
@@ -11,8 +11,8 @@
             <form action="">
                 
                 <nav>
-                    <a href="create_order.html" class="discount" id="discount">Create an Order</a>
-                    <a href="past_orders.html" class="team" id="team">Past Orders</a>
+                    <a href="create_order" class="discount" id="discount">Create an Order</a>
+                    <a href="past_orders" class="team" id="team">Past Orders</a>
                 </nav>
                 
             </form>
@@ -21,7 +21,7 @@
 
 
     <body>
-    <script src="author_login.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>
 
     </body>
 </html>

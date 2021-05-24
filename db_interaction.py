@@ -3,39 +3,45 @@ Main module to interact with the database
 """
 from sqlalchemy.orm import sessionmaker
 from db_connect import engine
-from db_interaction import DBInteraction
 from classes import Author, MessageStyle, Discount, Customer
 from datetime import timedelta
 
 
 class DBInteraction:
     def __init__(self):
-        self.session = sessionmaker(bind=engine)
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
 
-    def create_author_account(self, name, surname, password):
-        cur_author = Author(name, surname, password)
+    def create_author_account(self, name, surname, password, email):
+        cur_author = Author(name, surname, password, email)
         self.session.add(cur_author)
         self.session.commit()
 
         return cur_author
 
-    def create_customer(self, name, surname, password):
-        cur_customer = Customer(name, surname, password)
+    def create_customer(self, name, surname, password, email):
+        cur_customer = Customer(name, surname, password, email)
         self.session.add(cur_customer)
         self.session.commit()
 
         return cur_customer
 
-    def get_author(self, id):
-        return self.session.query(Author).get(id)
+    def get_author(self, author_id):
+        return self.session.query(Author).filter(Author.author_id ==
+                                                 author_id).first()
 
     def get_author_by_name(self, first_name, last_name):
         return self.session.query(Author) \
             .filter(Author.first_name == first_name and
                     Author.last_name == last_name).first()
 
+    def get_author_by_email_and_password(self, email, password):
+        return self.session.query(Author) \
+            .filter(Author.email == email and
+                    Author.password == password).first()
+
     def add_skill(self, author_id, style_names):
-        author = get_author(author_id)
+        author = self.get_author(author_id)
 
         for style in style_names:
             # select style from the database
@@ -55,21 +61,26 @@ class DBInteraction:
 
         self.session.commit()
 
-    def create_one_day_discount(self, author_id, style_id, amount, date_start):
-        author = get_author(author_id)
+    def create_one_day_discount(self, author_id, style_name, amount, date_start):
+        author = self.get_author(author_id)
 
-        discount = Discount(author_id, style_id, amount, date_start,
+        discount = Discount(author_id, style_name, amount, date_start,
                             date_start +
                             timedelta(hours=1))
 
         self.session.add(discount)
         self.session.commit()
 
-    def create_multiple_days_discount(self, author_id, style_id, amount, date_start,
-                                      date_end):
-        author = get_author(author_id)
+    def get_style_by_name(self, style_name):
+        return self.session.query(MessageStyle) \
+            .filter(MessageStyle.style_name == style_name).first()
 
-        discount = Discount(author_id, style_id, amount, date_start, date_end)
+    def create_multiple_days_discount(self, author_id, style_name, amount, date_start,
+                                      date_end):
+        author = self.get_author(author_id)
+        style_id = self.get_style_by_name(style_name)
+
+        discount = Discount(author_id, style_name, amount, date_start, date_end)
 
         self.session.add(discount)
         self.session.commit()

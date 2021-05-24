@@ -23,14 +23,16 @@ class Author(Base):
     first_name = Column('first_name', String(100))
     last_name = Column('last_name', String(100))
     password = Column('password', String(20))
+    email = Column('email', String(320))
 
     teams = relationship('Team', secondary=author_team_association, back_populates='authors')
     styles = relationship('MessageStyle', secondary=author_style_association, back_populates='authors')
 
-    def __init__(self, first_name, last_name, password):
+    def __init__(self, first_name, last_name, password, email):
         self.first_name = first_name
         self.last_name = last_name
         self.password = password
+        self.email = email
 
 
 class Team(Base):
@@ -72,6 +74,7 @@ class Customer(Base):
     customer_id = Column(Integer, primary_key=True)
     first_name = Column('first_name', String(100))
     last_name = Column('last_name', String(100))
+    email = Column('email', String(320))
 
 
 class SocialMedia(Base):
@@ -88,8 +91,8 @@ class Account(Base):
     customer_id = Column(Integer, ForeignKey('customer.customer_id'))
     media_id = Column(Integer, ForeignKey('socialmedia.media_id'))
     style_id = Column(Integer, ForeignKey('messagestyle.style_id'))
-    username = Column('username', String(20))
     password = Column('password', String(20))
+    username = Column('username', String(20))
     registration_date = Column('registration_date', DATE)
 
     customer = relationship("Customer")
