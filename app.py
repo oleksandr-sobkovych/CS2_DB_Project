@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from datetime import datetime
 
 from db_interaction import DBInteraction
@@ -14,20 +14,54 @@ class DataStore():
 
 data  = DataStore()
 
+
 @APP.route("/")
 def index():
     """Start page (choose author or customer)"""
     return render_template("index.html")
+
 
 @APP.route("/login_or_create_author")
 def login_or_create_author():
     """Choose login or create an new account as author"""
     return render_template("login_or_create_author.html")
 
+
 @APP.route("/author_login", methods=["GET"])
 def author_login():
     """Login page for authors"""
     return render_template("author_login.html")
+
+
+@APP.route("/authors", methods=["GET"])
+def get_authors():
+    names = []
+    authors = DataStore.db.get_authors()
+    for author in authors:
+        names.append({
+            'name': "%s %s" % (author.first_name, author.last_name),
+            'author_id': author.author_id,
+            'email': author.email,
+            'teams': [team.team_id for team in author.teams],
+            'styles': [style.style_id for style in author.styles]
+        })
+    return jsonify({'status': 'ok', 'authors': names})
+
+
+@APP.route("/search_1", methods=["GET"])
+def search_1():
+    author_id = request.args.get('author_id')
+    mess_num = request.args.get('mess_num')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_1(author_id, mess_num, date_start, date_end)
+    return jsonify({'status': 'ok', 'users': users})
 
 
 @APP.route("/author_login", methods=["POST"])
@@ -49,10 +83,12 @@ def login_author():
 
     return redirect("/author_account")
 
+
 @APP.route("/author_signup", methods=["GET"])
 def author_signup():
     """Page for author signing up"""
     return render_template("author_signup.html")
+
 
 @APP.route("/author_signup", methods=["POST"])
 def create_author():

@@ -11,6 +11,7 @@ class DBInteraction:
     def __init__(self):
         Session = sessionmaker(bind=engine)
         self.session = Session()
+        self.engine = engine
 
     def create_author_account(self, name, surname, password, email):
         cur_author = Author(name, surname, password, email)
@@ -29,6 +30,24 @@ class DBInteraction:
     def get_author(self, author_id):
         return self.session.query(Author).filter(Author.author_id ==
                                                  author_id).first()
+
+    def get_authors(self):
+        return self.session.query(Author).all()
+
+    def search_1(self, author_id, mess_num, date_start, date_end):
+        return self.engine.execute("""
+            SELECT CONCAT(cus.first_name, ' ', cus.last_name) as name from Customer cus
+            INNER JOIN Account acc ON cus.customer_id = acc.customer_id
+            INNER JOIN PlacedOrder ord ON ord.account_id = acc.account_id
+            INNER JOIN Team team ON team.team_id = ord.team_id
+            INNER JOIN AuthorTeam ta ON team.team_id = ta.team_id
+            INNER JOIN Author author ON author.author_id = ta.author_id
+            WHERE author.author_id = %s
+            AND ord.created_date >= '%s'
+            AND ord.created_date <  '%s'
+            GROUP BY cus.first_name, cus.last_name, author.author_id, ord.order_id
+            HAVING COUNT(cus.first_name) >= %s
+        """ % (author_id, date_start, date_end, mess_num)).all()
 
     def get_author_by_name(self, first_name, last_name):
         return self.session.query(Author) \
@@ -86,7 +105,7 @@ class DBInteraction:
         self.session.commit()
 
     def execute_3rd_query(self):  # TODO: bad name need to fix
-        result = engine.execute("""
+        result = self.engine.execute("""
             SELECT a.author_id AS id, CONCAT(a.first_name, ' ', a.last_name) AS full_name FROM Author a
             INNER JOIN AuthorTeam ta ON ta.author_id = a.author_id
             INNER JOIN Team t ON t.team_id = ta.team_id
