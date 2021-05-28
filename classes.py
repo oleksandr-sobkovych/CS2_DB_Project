@@ -6,14 +6,15 @@ Base = declarative_base()
 
 # Declare all many-to-many secondary tables
 author_team_association = Table('authorteam', Base.metadata,
-    Column('team_id', Integer, ForeignKey('team.team_id')),
-    Column('author_id', Integer, ForeignKey('author.author_id'))
-)
+                                Column('team_id', Integer, ForeignKey('team.team_id')),
+                                Column('author_id', Integer, ForeignKey('author.author_id'))
+                                )
 
 author_style_association = Table('skill', Base.metadata,
-    Column('author_id', Integer, ForeignKey('author.author_id')),
-    Column('style_id', Integer, ForeignKey('messagestyle.style_id'))
-)
+                                 Column('author_id', Integer, ForeignKey('author.author_id')),
+                                 Column('style_id', Integer, ForeignKey('messagestyle.style_id'))
+                                 )
+
 
 # Declare main classes
 class Author(Base):
@@ -67,6 +68,11 @@ class Message(Base):
     style_id = Column(Integer, ForeignKey('messagestyle.style_id'))
     style = relationship("MessageStyle")
 
+    def __init__(self, text, style_id, style):
+        self.text = text
+        self.style_id = style_id
+        self.style = style
+
 
 class Customer(Base):
     __tablename__ = 'customer'
@@ -76,12 +82,21 @@ class Customer(Base):
     last_name = Column('last_name', String(100))
     email = Column('email', String(320))
 
+    def __init__(self, first_name, last_name, password, email):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.password = password
+        self.email = email
+
 
 class SocialMedia(Base):
     __tablename__ = 'socialmedia'
 
     media_id = Column(Integer, primary_key=True)
     media_name = Column('first_name', String(100))
+
+    def __init__(self, media_name):
+        self.media_name = media_name
 
 
 class Account(Base):
@@ -99,6 +114,14 @@ class Account(Base):
     media = relationship("SocialMedia")
     style = relationship("MessageStyle")
 
+    def __init__(self, customer_id, media_id, style_id, password, username, registration_date):
+        self.customer_id = customer_id
+        self.media_id = media_id
+        self.style_id = style_id
+        self.password = password
+        self.username = username
+        self.registration_date = registration_date
+
 
 class PlacedOrder(Base):
     __tablename__ = 'placedorder'
@@ -113,6 +136,12 @@ class PlacedOrder(Base):
     team = relationship("Team")
     message = relationship("Message")
 
+    def __init__(self, account_id, team_id, message_id, created_date):
+        self.account_id = account_id
+        self.team_id = team_id
+        self.message_id = message_id
+        self.created_date = created_date
+
 
 class Access(Base):
     __tablename__ = 'access'
@@ -125,6 +154,12 @@ class Access(Base):
 
     account = relationship("Account")
     author = relationship("Author")
+
+    def __init__(self, account_id, author_id, access_granted_date, access_terminated_date):
+        self.account_id = account_id
+        self.author_id = author_id
+        self.access_granted_date = access_granted_date
+        self.access_terminated_date = access_terminated_date
 
 
 class Discount(Base):
@@ -160,3 +195,8 @@ class Review(Base):
 
     order = relationship("PlacedOrder")
 
+    def __init__(self, order_id, message, rating, created_date):
+        self.order_id = order_id
+        self.message = message
+        self.rating = rating
+        self.created_date = created_date

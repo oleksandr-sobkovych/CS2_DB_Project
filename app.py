@@ -6,35 +6,40 @@ from db_interaction import DBInteraction
 APP = Flask(__name__)
 
 
-class DataStore():
+class DataStore:
     db = DBInteraction()
     author_id = None
     style_name = None
     customer_id = None
 
-data  = DataStore()
+
+data = DataStore()
 
 
 @APP.route("/")
 def index():
+    # http://127.0.0.1:8888/
     """Start page (choose author or customer)"""
     return render_template("index.html")
 
 
 @APP.route("/login_or_create_author")
 def login_or_create_author():
+    # http://127.0.0.1:8888/login_or_create_author
     """Choose login or create an new account as author"""
     return render_template("login_or_create_author.html")
 
 
 @APP.route("/author_login", methods=["GET"])
 def author_login():
+    # http://127.0.0.1:8888/author_login
     """Login page for authors"""
     return render_template("author_login.html")
 
 
 @APP.route("/authors", methods=["GET"])
 def get_authors():
+    # http://127.0.0.1:8888/authors
     names = []
     authors = DataStore.db.get_authors()
     for author in authors:
@@ -50,6 +55,7 @@ def get_authors():
 
 @APP.route("/search_1", methods=["GET"])
 def search_1():
+    # http://127.0.0.1:8888/search_1?author_id=3&mess_num=1&date_start=2021-01-01&date_end=2021-06-01
     author_id = request.args.get('author_id')
     mess_num = request.args.get('mess_num')
     date_start = request.args.get('date_start')
@@ -64,8 +70,174 @@ def search_1():
     return jsonify({'status': 'ok', 'users': users})
 
 
+@APP.route("/search_2", methods=["GET"])
+def search_2():
+    # http://127.0.0.1:8888/search_2?customer_id=3&date_start=2021-01-01&date_end=2021-06-01
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_2(customer_id, date_start, date_end)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_3", methods=["GET"])
+def search_3():
+    # http://127.0.0.1:8888/search_3?date_start=2021-01-01&date_end=2021-06-01&ids=2
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    ids = request.args.get('ids')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_3(date_start, date_end, ids)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_4", methods=["GET"])
+def search_4():
+    # http://127.0.0.1:8888/search_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    order_id = request.args.get('order_id')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_4(date_start, date_end, order_id)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_5", methods=["GET"])
+def search_5():
+    # http://127.0.0.1:8888/search_5?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&count=1
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    count = request.args.get('count')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_5(customer_id, date_start, date_end, count)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_6", methods=["GET"])
+def search_6():
+    # http://127.0.0.1:8888/search_6?date_start=2021-01-01&date_end=2021-06-01&author_id=2
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    author_id = request.args.get('author_id')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_6(date_start, date_end, author_id)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_7", methods=["GET"])
+def search_7():
+    # http://127.0.0.1:8888/search_7?customer_id=1
+    customer_id = request.args.get('customer_id')
+
+    users = DataStore.db.search_7(customer_id)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_8", methods=["GET"])
+def search_8():
+    # http://127.0.0.1:8888/search_8?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    author_id = request.args.get('author_id')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_8(customer_id, author_id, date_start, date_end)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_9", methods=["GET"])
+def search_9():
+    # http://127.0.0.1:8888/search_9?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    author_id = request.args.get('author_id')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_9(customer_id)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_10", methods=["GET"])
+def search_10():
+    # http://127.0.0.1:8888/search_10?customer_id=2&date_start=2021-01-01&date_end=2021-06-01
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_10(customer_id, date_start, date_end)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_11", methods=["GET"])
+def search_11():
+    # http://127.0.0.1:8888/search_11?year=2021
+    year = request.args.get('year')
+
+    users = DataStore.db.search_11(year)
+    return jsonify({'status': 'ok', 'users': users})
+
+
+@APP.route("/search_12", methods=["GET"])
+def search_12():
+    # http://127.0.0.1:8888/search_12?customer_id=1&date_start=2021-01-01&date_end=2021-06-01
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    date_start = datetime.strftime(date_start, '%Y-%m-%d')
+    date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+
+    users = DataStore.db.search_12(customer_id, date_start, date_end)
+    return jsonify({'status': 'ok', 'users': users})
+
+
 @APP.route("/author_login", methods=["POST"])
 def login_author():
+    # http://127.0.0.1:8888/author_login
     """Login page for authors"""
     email = request.form.get("email")
     password = request.form.get("password")
@@ -75,8 +247,7 @@ def login_author():
 
     try:
         data.author_id = DataStore.db.get_author_by_email_and_password(email,
-
-                                                                 password).author_id
+                                                                       password).author_id
     except AttributeError:
         return redirect("/author_login")
     print(data.author_id)
@@ -86,12 +257,14 @@ def login_author():
 
 @APP.route("/author_signup", methods=["GET"])
 def author_signup():
+    # http://127.0.0.1:8888/author_signup
     """Page for author signing up"""
     return render_template("author_signup.html")
 
 
 @APP.route("/author_signup", methods=["POST"])
 def create_author():
+    # http://127.0.0.1:8888/author_signup
     """Creating author account"""
     name = request.form.get("name")
     surname = request.form.get("surname")
@@ -110,11 +283,13 @@ def create_author():
 
 @APP.route("/author_account", methods=["GET"])
 def author_account():
+    # http://127.0.0.1:8888/author_account
     """Page for choosing style and then seeing possible tasks
 
-    TO DO:
-    !!!Seeing possible tasks
-    !!!Choose many styles"""
+    TODO:
+        !!!Seeing possible tasks
+        !!!Choose many styles
+    """
     return render_template("author_account.html")
 
 
@@ -125,6 +300,7 @@ def author_account_post():
     data.style_name = [style]
     DataStore.db.add_skill(data.author_id, [style])
     return redirect("/manage_task")
+
 
 # @APP.route("/task", methods=["GET", "POST"])
 # def task():
@@ -139,24 +315,31 @@ def author_account_post():
 
 @APP.route("/manage_task")
 def manage_task():
+    # http://127.0.0.1:8888/manage_task
     """Manage page for authors (creating discount or team)
 
-    TO DO
-    !!!Do it as a menu buttom"""
+    TODO: !!!Do it as a menu buttom
+    """
     return render_template("manage_task.html")
+
 
 @APP.route("/discount")
 def discount():
+    # http://127.0.0.1:8888/discount
     """Page for creating discount"""
     return render_template("discount.html")
 
+
 @APP.route("/multiple_days_discount", methods=["GET"])
 def multiple_days_discount():
+    # http://127.0.0.1:8888/multiple_days_discount
     """Page for creating discount"""
     return render_template("multiple_days_discount.html")
 
+
 @APP.route("/multiple_days_discount", methods=["POST"])
 def multiple_days_discount_post():
+    # http://127.0.0.1:8888/multiple_days_discount
     From = datetime.strptime(request.form.get("From"), "%d.%m")
     print(From)
     To = datetime.strptime(request.form.get("To"))
@@ -164,39 +347,48 @@ def multiple_days_discount_post():
     DataStore.db.create_multiple_days_discount(data.author_id, data.style_name, 5, From, To)
     return redirect("/finish_author")
 
+
 @APP.route("/create_team", methods=["GET", "POST"])
 def create_team():
+    # http://127.0.0.1:8888/create_team
     """Page for creating team
 
-    TO DO
-    !!!Create_team.html доробити"""
+    TODO: !!!Create_team.html доробити
+    """
     return render_template("create_team.html")
+
 
 @APP.route("/one_day_discount", methods=["GET"])
 def one_day_discount():
+    # http://127.0.0.1:8888/one_day_discount
     """Page for creating 1 day discount"""
     return render_template("one_day_discount.html")
+
 
 @APP.route("/one_day_discount", methods=["POST"])
 def one_day_discount_post():
     from_ = datetime.strptime(request.form.get("from"), "%d.%m")
     to_ = request.form.get("discount_number")
-    print (from_)
-    print (to_)
+    print(from_)
+    print(to_)
     DataStore.db.create_one_day_discount(data.author_id, data.style_name,
-                                               to_, from_)
+                                         to_, from_)
     return redirect("/finish_author")
+
 
 @APP.route("/login_or_create_customer")
 def login_or_create_customer():
+    # http://127.0.0.1:8888/login_or_create_customer
     """Choose login or create an new account as customer
 
-    TO DO
-    !ПОПРАВИТИ CSS"""
+    TODO: !ПОПРАВИТИ CSS
+        """
     return render_template("login_or_create_customer.html")
+
 
 @APP.route("/customer_login", methods=["GET"])
 def customer_login():
+    # http://127.0.0.1:8888/customer_login
     """Cusomer login page"""
     return render_template("customer_login.html")
 
@@ -212,10 +404,13 @@ def login_customer():
 
     return redirect("/customer_account")
 
+
 @APP.route("/customer_signup", methods=["GET"])
 def customer_signup():
+    # http://127.0.0.1:8888/customer_signup
     """Cusomer signup page"""
     return render_template("customer_singup.html")
+
 
 @APP.route("/customer_signup", methods=["POST"])
 def customer_signup_post():
@@ -232,19 +427,25 @@ def customer_signup_post():
     data.customer_id = DataStore.db.create_customer(name, surname, password, email).customer_id
     return redirect("/customer_account")
 
+
 @APP.route("/customer_account")
 def customer_account():
+    # http://127.0.0.1:8888/customer_account
     """Cusomer page
 
-    TO DO
-    !!!Доробти, щоб після вибору мережі, було вижно одразу доступні команди
-    !!!Кнопка додати мережу"""
+    TODO
+        !!!Доробти, щоб після вибору мережі, було вижно одразу доступні команди
+        !!!Кнопка додати мережу
+    """
     return render_template("customer_account.html")
+
 
 @APP.route("/user_space")
 def user_space():
+    # http://127.0.0.1:8888/user_space
     """User page"""
     return render_template("user_space.html")
+
 
 # @APP.route("/add_styles", methods=["GET", "POST"])
 # def add_style():
@@ -265,17 +466,21 @@ def user_space():
 #
 @APP.route("/create_order", methods=["GET"])
 def create_order():
+    # http://127.0.0.1:8888/create_order
     """Creating order"""
     return render_template("create_order.html")
 
+
 @APP.route("/create_order", methods=["POST"])
 def order_creating():
+    # http://127.0.0.1:8888/create_order
     """Creating order
 
-    !!!TO DO
-    Зробити випадаючі списки
-    Додати поле інша інформація
-    кнопка "додати стиль"""
+    !!!
+    TODO Зробити випадаючі списки
+        Додати поле інша інформація
+        кнопка "додати стиль
+    """
     style = request.form.get("style")
     team = request.form.get("team")
     media = request.form.get("media")
@@ -284,13 +489,18 @@ def order_creating():
     print(media)
     return redirect("/finish_author")
 
+
 @APP.route("/past_orders")
 def past_orders():
+    # http://127.0.0.1:8888/past_orders
     """Information about orders
 
-    !!!TO DO
-    Доробити сторінку"""
+    !!!
+    TODO: Доробити сторінку
+    """
     return render_template("past_orders.html")
+
+
 #
 # @APP.route("/give_access", methods=["GET", "POST"])
 # def give_access():
@@ -310,8 +520,10 @@ def past_orders():
 #
 @APP.route("/finish_author", methods=["GET", "POST"])
 def finish_author():
+    # http://127.0.0.1:8888/finish_author
     """Result page for discount creating"""
     return render_template("finish_author.html")
+
 
 if __name__ == "__main__":
     APP.run(debug=True, port=8888)
