@@ -53,6 +53,19 @@ def get_authors():
     return jsonify({'status': 'ok', 'authors': names})
 
 
+@APP.route("/styles", methods=["GET"])
+def get_styles():
+    names = []
+    styles = DataStore.db.get_styles()
+    for style in styles:
+        names.append({
+            'name': style.style_name,
+            'style_id': style.style_id,
+            'authors': [author.author_id for author in style.authors]
+        })
+    return jsonify({'status': 'ok', 'styles': names})
+
+
 @APP.route("/queries", methods=["GET"])
 def queries():
     return render_template("queries.html")

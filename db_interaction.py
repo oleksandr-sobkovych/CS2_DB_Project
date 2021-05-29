@@ -34,6 +34,9 @@ class DBInteraction:
     def get_authors(self):
         return self.session.query(Author).all()
 
+    def get_styles(self):
+        return self.session.query(MessageStyle).all()
+
     def search_1(self, author_id, mess_num, date_start, date_end):
         return self.engine.execute("""
             SELECT CONCAT(cus.first_name, ' ', cus.last_name) as name from Customer cus
