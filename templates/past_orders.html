@@ -8,15 +8,20 @@
 
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form action="./app">
+            <form id="formmm" action="">
                 <h1>Welcome to Past Orders</h1>
-                <select id="mySelect" size="1">
-                    
-                  </select>
-                <salutation-element username="Mayank"></salutation-element>
-
+                <select placeholder="Author Name" id="mySelect" size="1" name="name">
+                    <option selected="selected" value="Author Name" disabled>Author Name</option>
+                </select>
+                <!-- <salutation-element username="Mayank"></salutation-element> -->
+                
+                <input type="maxNum" placeholder="number of authors" name="maxNum" id="maxNum"/>
+                <input type="dateStart" placeholder="From date" name="dateStart" id="dateStart"/>
+                <input type="dateEnd" placeholder="to date" name="dateEnd" id="dateEnd"/>
+              <!-- <salutation-element username="Mayank"></salutation-element> -->
+              
                 <nav>
-                    
+                    <input type="submit" value="Submit" id="submit">
                 </nav>
             </form>
         </div>
@@ -25,5 +30,6 @@
 
     <body>
     <script src="../static/js/past_orders.js"></script>
+
     </body>
 </html>
