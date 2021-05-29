@@ -52,8 +52,28 @@ document.getElementById('formmm').addEventListener('submit', function(evt){
     // const response = await fetch(url)
 
 
-    // response = {'status': 'ok', 'users': users}
+    let users = [{name: "Maria Garcia",
+                dateStart: "10-02-2020",
+                dateEnd: "12-02-2020",
+    },
+    {name: "James Smith",
+                dateStart: "10-02-2020",
+                dateEnd: "12-02-2020",
+    }]
+
+    response = {'status': 'ok', 'users': users}
     
+    var table = document.getElementById("result_table");
+
+    var row = table.insertRow(0);
+
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+
+    cell1.innerHTML = "NEW CELL1";
+    cell2.innerHTML = "NEW CELL2";
+
+
     // document.getElementById('dateEnd').style.display = 'none'
     // document.getElementById('topMessage').style.display = 'none';
 })
