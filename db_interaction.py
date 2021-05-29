@@ -220,28 +220,27 @@ class DBInteraction:
 
     def create_one_day_discount(self, author_id, amount, date_start):
         if date_start < datetime.now():
-            return None
-        if not self.all_styles_id:
-            msg_style = MessageStyle("all")
-            self.session.add(msg_style)
-            self.all_styles_id = msg_style.style_id
-        discount = Discount(author_id, self.all_styles_id, amount, date_start,
+            return False
+
+        discount = Discount(author_id, 1, amount, date_start,
                             date_start + timedelta(hours=24))
 
         self.session.add(discount)
         self.session.commit()
+        return True
 
     def get_style_by_name(self, style_name):
         return self.session.query(MessageStyle) \
             .filter(MessageStyle.style_name == style_name).one_or_none()
 
-    def create_multiple_days_discount(self, author_id, style_name, amount,
+    def create_multiple_days_discount(self, author_id, style_id, amount,
                                       date_start, date_end):
-        style_id = self.get_style_by_name(style_name)["style_id"]
+        print(date_start < datetime.now(), date_end < date_start,  style_id, [st.style_id for st in self.get_author(author_id).styles])
         if (date_start < datetime.now() or date_end < date_start
-                or style_id not in self.get_author(author_id)["styles"]):
-            return None
+                or int(style_id) not in [st.style_id for st in self.get_author(author_id).styles]):
+            return False
         discount = Discount(author_id, style_id, amount, date_start, date_end)
 
         self.session.add(discount)
         self.session.commit()
+        return True

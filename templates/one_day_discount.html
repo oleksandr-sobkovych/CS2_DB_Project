@@ -23,21 +23,22 @@
 
     document.getElementById('signup').addEventListener('click', async function(evt){
         evt.preventDefault();
+        const author_id = localStorage.getItem('author_id');
         const date_from = document.getElementById('date_from').value;
         const amount = document.getElementById('amount').value;
         document.getElementById('container').classList = 'container disabled';
 
-        let response = await fetch('/create_one_day_discount', {
+        let response = await fetch('/one_day_discount', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({date_from, amount})
+            body: JSON.stringify({author_id, date_from, amount})
         });
         response = await response.json();
         console.log(response);
         if (response.status === 'ok') {
-            alert('Ододенну знижку успішно створено!')
+            alert('Ододенну знижку успішно створено!');
             window.location = 'author_account';
         } else {
             document.getElementById('container').classList = 'container';

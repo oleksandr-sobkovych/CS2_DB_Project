@@ -53,8 +53,8 @@ def get_authors():
     return jsonify({'status': 'ok', 'authors': names})
 
 
-@APP.route("/styles", methods=["GET"])
-def get_styles():
+@APP.route("/all_styles", methods=["GET"])
+def get_all_styles():
     names = []
     styles = DataStore.db.get_styles()
     for style in styles:
@@ -63,6 +63,25 @@ def get_styles():
             'style_id': style.style_id,
             'authors': [author.author_id for author in style.authors]
         })
+    return jsonify({'status': 'ok', 'styles': names})
+
+
+@APP.route("/author_styles", methods=["GET"])
+def get_author_styles():
+    author_id = request.args.get('author_id')
+    author = DataStore.db.get_author(author_id)
+    if not author:
+        return jsonify({'status': 'error', 'reason': 'author does not exist with this id'})
+
+    names = []
+    styles = DataStore.db.get_styles()
+    for style in styles:
+        if style.style_id in [st.style_id for st in author.styles]:
+            names.append({
+                'name': style.style_name,
+                'style_id': style.style_id,
+                'authors': [author.author_id for author in style.authors]
+            })
     return jsonify({'status': 'ok', 'styles': names})
 
 
@@ -171,9 +190,9 @@ def search_4():
 def search_results_4():
     # http://127.0.0.1:8888/search_results_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
 
-    numOrders=request.args.get('numOrders')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    numOrders = request.args.get('numOrders')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
 
     if not (numOrders and date_start and date_end):
@@ -522,16 +541,32 @@ def multiple_days_discount():
 
 @APP.route("/multiple_days_discount", methods=["POST"])
 def multiple_days_discount_post():
-    # http://127.0.0.1:8888/multiple_days_discount
-    date_start = datetime.strptime(request.form.get("From"), "%y-%m-%d %h:%m")
-    # print(date_start)
-    date_end = datetime.strptime(request.form.get("To"), "%y-%m-%d %h:%m")
-    # print(date_end)
-    style_name = request.form.get("style")
-    DataStore.db.create_multiple_days_discount(data.author_id,
-                                               style_name, 50, date_start,
-                                               date_end)
-    return redirect("/finish_author")
+    author_id = request.json.get('author_id')
+    date_start = request.json.get('date_from')
+    date_end = request.json.get('date_to')
+    amount = request.json.get('amount')
+    style_id = request.json.get('style_id')
+
+    print(author_id, date_start, date_end, amount, style_id)
+
+    if not (author_id and date_start and date_end and amount and style_id):
+        return jsonify({'status': 'error', 'reason': 'lacking parameters'})
+
+    try:
+        date_start = datetime.strptime(date_start, '%Y-%m-%d')
+        date_end = datetime.strptime(date_end, '%Y-%m-%d')
+    except:
+        return jsonify({'status': 'error', 'reason': 'wrong date'})
+
+    try:
+        if DataStore.db.create_multiple_days_discount(author_id,
+                                                   style_id, amount, date_start,
+                                                   date_end):
+            return jsonify({'status': 'ok'})
+        else:
+            return jsonify({'status': 'error', 'reason': 'wrong parameters'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error, ' + str(e)})
 
 
 @APP.route("/create_team", methods=["GET", "POST"])
@@ -553,8 +588,29 @@ def one_day_discount():
 
 @APP.route("/one_day_discount", methods=["POST"])
 def one_day_discount_post():
-    date_start = datetime.strptime(request.form.get("from"), "%y-%m-%d %h:%m")
-    DataStore.db.create_one_day_discount(data.author_id, 50, date_start)
+    author_id = request.json.get('author_id')
+    date_start = request.json.get('date_from')
+    amount = request.json.get('amount')
+
+    print(author_id, date_start, amount)
+
+    if not (author_id and date_start and amount):
+        return jsonify({'status': 'error', 'reason': 'lacking parameters'})
+
+    try:
+        date_start = datetime.strptime(date_start, '%Y-%m-%d')
+    except:
+        return jsonify({'status': 'error', 'reason': 'wrong date'})
+
+    try:
+        if DataStore.db.create_one_day_discount(author_id, amount, date_start):
+            return jsonify({'status': 'ok'})
+        else:
+            return jsonify({'status': 'error', 'reason': 'wrong parameters'})
+    except Exception as e:
+        return jsonify(
+            {'status': 'error', 'reason': 'database error, ' + str(e)})
+
     return redirect("/finish_author")
 
 
