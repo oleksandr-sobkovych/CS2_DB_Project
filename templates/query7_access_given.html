@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/style.css">
+    </head>
+
+    <body>
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            <form id="search-form">
+                <h1 class="heading">Запит 7</h1>
+                <h2 class="description">• для покупця С знайти усiх авторiв, яким вiн надав доступ до хоча б одного облiкового
+                    запису у соцiальнiй мережi, а потiм позбавив його цього доступу;</h2>
+                <div>
+                    <div class="width-50 center-div" id="parameters">
+                        <select id="select">
+                            <option selected="selected" disabled>Ім'я покупця</option>
+                        </select>
+
+                        <button type="button" id="search">Шукати</button>
+                    </div>
+                    <div class="width-50">
+                        <ul id="search_results"></ul>
+                    </div>
+                    <div class="tooltip">Які параметри вказати?
+                        <!-- TODO вказати параменти як екзампл -->
+                      <!-- <span class="tooltiptext">Yevheniy Stefansson<br>2021-01-01<br>2021-06-01</span> -->
+                    </div>
+                    <a href="/">Повернутися на головну сторінку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../static/js/search_7.js"></script>
+    </body>
+</html>

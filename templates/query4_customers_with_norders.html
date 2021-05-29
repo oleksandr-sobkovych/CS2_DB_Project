@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/style.css">
+    </head>
+
+    <body>
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            <form id="search-form">
+                <h1 class="heading">Запит 4</h1>
+                <h2 class="description">знайти усiх покупцiв, якi зробили хоча б N замовлень за вказаний перiод (з дати F по дату
+                    T)</h2>
+                <div>
+                    <div class="width-50 center-div" id="parameters">
+                        <input type="number" class="param-input" placeholder="Кількість замовлень" name="numOrders" id="numOrders"/>
+                        <input type="date" class="param-input" placeholder="Дата початку" name="dateStart" id="dateStart"/>
+                        <input type="date" class="param-input" placeholder="Дата кінця" name="dateEnd" id="dateEnd"/>
+
+                        <button type="button" id="search">Шукати</button>
+                    </div>
+                    <div class="width-50">
+                        <ul id="search_results"></ul>
+                    </div>
+                    <div class="tooltip">Які параметри вказати?
+                        <!-- TODO вказати параметри як екзампл -->
+                      <!-- <span class="tooltiptext">Yevheniy Stefansson<br>2021-01-01<br>2021-06-01</span> -->
+                    </div>
+                    <a href="/">Повернутися на головну сторінку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../static/js/search_4.js"></script>
+    </body>
+</html>

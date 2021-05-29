@@ -110,6 +110,10 @@ def search_results_2():
     return jsonify({'status': 'ok', 'users': users})
 
 
+@APP.route("/search_3", methods=["GET"])
+def search_3():
+    return render_template("query3_min_n_customers.html")
+
 @APP.route("/search_results_3", methods=["GET"])
 def search_results_3():
     # http://127.0.0.1:8888/search_results_3?date_start=2021-01-01&date_end=2021-06-01&ids=2
@@ -183,6 +187,11 @@ def search_results_7():
     users = DataStore.db.search_7(customer_id)
     return jsonify({'status': 'ok', 'users': users})
 
+
+
+@APP.route("/search_8", methods=["GET"])
+def search_8():
+    return render_template("query8_common_actions.html")
 
 @APP.route("/search_results_8", methods=["GET"])
 def search_results_8():
