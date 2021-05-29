@@ -1,39 +1,38 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/author_login.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
-
-
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form id="formmm" action="">
-                <h1>Welcome to Past Orders</h1>
-                <select placeholder="Author Name" id="mySelect" size="1" name="name">
-                    <option selected="selected" value="Author Name" disabled>Author Name</option>
-                </select>
-                <!-- <salutation-element username="Mayank"></salutation-element> -->
-                
-                <input type="maxNum" placeholder="number of authors" name="maxNum" id="maxNum"/>
-                <input type="dateStart" placeholder="From date" name="dateStart" id="dateStart"/>
-                <input type="dateEnd" placeholder="to date" name="dateEnd" id="dateEnd"/>
-              <!-- <salutation-element username="Mayank"></salutation-element> -->
-              
-                <nav>
-                    <input type="submit" value="Submit" id="submit">
-                </nav>
-                <table id="result_table" style="background-color:white; max-width:100%; white-space:nowrap;">
-                    <!-- <tr><td>Row 1</td></tr> -->
-                  </table>
+            <form id="search-form">
+                <h1 class="heading">Запит 1</h1>
+                <h2 class="description">Для автора A знайти усiх покупцiв, якi замовляли у нього повiдомлення хоча б N разiв за
+вказаний перiод (з дати F по дату T)</h2>
+                <div>
+                    <div class="width-50 center-div" id="parameters">
+                        <select id="author-select">
+                            <option selected="selected" value="Author Name" disabled>Ім'я автора</option>
+                        </select>
+                        <input type="text" class="param-input" placeholder="Кількість замовлених повідомлень" name="maxNum" id="maxNum"/>
+                        <input type="date" class="param-input" placeholder="Дата початку" name="dateStart" id="dateStart"/>
+                        <input type="date" class="param-input" placeholder="Дата кінця" name="dateEnd" id="dateEnd"/>
+
+                        <button type="button" id="search">Шукати</button>
+                        <div class="tooltip">Які параметри вказати?
+                          <span class="tooltiptext">Maria Rodriguez<br>1<br>2021-01-01<br>2021-06-01</span>
+                        </div>
+                    </div>
+                    <div class="width-50">
+                        <ul id="search_results"></ul>
+                    </div>
+                </div>
             </form>
-            
         </div>
     </div>
 
-
-    <body>
     <script src="../static/js/past_orders.js"></script>
-
     </body>
 </html>

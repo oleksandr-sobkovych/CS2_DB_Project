@@ -61,13 +61,22 @@ def search_1():
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
 
-    date_start = datetime.strptime(date_start, '%Y-%m-%d')
-    date_start = datetime.strftime(date_start, '%Y-%m-%d')
-    date_end = datetime.strptime(date_end, '%Y-%m-%d')
-    date_end = datetime.strftime(date_end, '%Y-%m-%d')
+    if not (author_id and mess_num and date_start and date_end):
+        return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
-    users = DataStore.db.search_1(author_id, mess_num, date_start, date_end)
-    return jsonify({'status': 'ok', 'users': users})
+    try:
+        date_start = datetime.strptime(date_start, '%Y-%m-%d')
+        date_start = datetime.strftime(date_start, '%Y-%m-%d')
+        date_end = datetime.strptime(date_end, '%Y-%m-%d')
+        date_end = datetime.strftime(date_end, '%Y-%m-%d')
+    except:
+        return jsonify({'status': 'error', 'reason': 'wrong date'})
+
+    try:
+        users = DataStore.db.search_1(author_id, mess_num, date_start, date_end)
+        return jsonify({'status': 'ok', 'users': users})
+    except:
+        return jsonify({'status': 'error', 'reason': 'database error'})
 
 
 @APP.route("/search_2", methods=["GET"])

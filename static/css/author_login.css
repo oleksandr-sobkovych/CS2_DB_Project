@@ -13,6 +13,7 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	height: 100vh;
 	margin: -20px 0 50px;
+	color: white;
 }
 
 h1 {
@@ -82,7 +83,16 @@ input {
 	border: none;
 	padding: 12px 15px;
 	margin: 8px 0;
-	width: 100%;
+}
+
+h2 {
+	font-weight: 700;
+	font-size: 17px;
+}
+
+.param-input, .param-input::placeholder {
+	width: 50%;
+	color: black;
 }
 
 .container {
@@ -91,22 +101,27 @@ input {
   	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
 			0 10px 10px rgba(0,0,0,0.22);
 	position: relative;
-	overflow: hidden;
+	overflow: scroll;
 	width: 768px;
 	max-width: 100%;
 	min-height: 480px;
 }
 
+#mySelect {
+	background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+	width: 50%;
+}
+
 .form-container {
-	position: absolute;
-	top: 0;
-	height: 100%;
+	text-align: center;
 	transition: all 0.6s ease-in-out;
+	padding: 50px;
 }
 
 .sign-in-container {
-	left: 25%;
-	width: 50%;
 	z-index: 2;
 }
 
