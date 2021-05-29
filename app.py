@@ -498,7 +498,7 @@ def past_orders():
     !!!
     TODO: Доробити сторінку
     """
-    return render_template("past_orders.html")
+    return render_template("query1_past_orders.html")
 
 
 #
