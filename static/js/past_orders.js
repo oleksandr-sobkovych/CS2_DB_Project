@@ -32,6 +32,21 @@ document.addEventListener("DOMContentLoaded", async function() {
 
    
     });
+
+function addRow(tableID, data) {
+    let tableRef = document.getElementById(tableID);
+    for (let item in data){
+        // console.log(item)
+        let newRow = tableRef.insertRow(-1);
+        let newCell = newRow.insertCell(0);
+    
+        let newText = document.createTextNode(data[item].name+" "+data[item].dateStart+" "+data[item].dateEnd);
+    
+        newCell.appendChild(newText);
+    }
+    
+    }
+
 document.getElementById('formmm').addEventListener('submit', function(evt){
     evt.preventDefault();
     console.log("KJJK")
@@ -63,15 +78,7 @@ document.getElementById('formmm').addEventListener('submit', function(evt){
 
     response = {'status': 'ok', 'users': users}
     
-    var table = document.getElementById("result_table");
-
-    var row = table.insertRow(0);
-
-    var cell1 = row.insertCell(0);
-    var cell2 = row.insertCell(1);
-
-    cell1.innerHTML = "NEW CELL1";
-    cell2.innerHTML = "NEW CELL2";
+    addRow("result_table", users)
 
 
     // document.getElementById('dateEnd').style.display = 'none'
