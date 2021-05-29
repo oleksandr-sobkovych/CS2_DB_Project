@@ -4,7 +4,7 @@ Main module to interact with the database
 from sqlalchemy.orm import sessionmaker
 from db_connect import engine
 from classes import Author, MessageStyle, Discount, Customer
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 class DBInteraction:
@@ -12,6 +12,7 @@ class DBInteraction:
         Session = sessionmaker(bind=engine)
         self.session = Session()
         self.engine = engine
+        self.all_styles_id = None
 
     def create_author_account(self, name, surname, password, email):
         cur_author = Author(name, surname, password, email)
@@ -29,7 +30,7 @@ class DBInteraction:
 
     def get_author(self, author_id):
         return self.session.query(Author).filter(Author.author_id ==
-                                                 author_id).first()
+                                                 author_id).one_or_none()
 
     def get_authors(self):
         return self.session.query(Author).all()
@@ -214,31 +215,30 @@ class DBInteraction:
 
         self.session.commit()
 
-    def create_one_day_discount(self, author_id, style_name, amount, date_start):
-        author = self.get_author(author_id)
-
-        discount = Discount(author_id, style_name, amount, date_start,
-                            date_start +
-                            timedelta(hours=1))
+    def create_one_day_discount(self, author_id, amount, date_start):
+        if date_start < datetime.now():
+            return None
+        if not self.all_styles_id:
+            msg_style = MessageStyle("all")
+            self.session.add(msg_style)
+            self.all_styles_id = msg_style.style_id
+        discount = Discount(author_id, self.all_styles_id, amount, date_start,
+                            date_start + timedelta(hours=24))
 
         self.session.add(discount)
         self.session.commit()
 
     def get_style_by_name(self, style_name):
         return self.session.query(MessageStyle) \
-            .filter(MessageStyle.style_name == style_name).first()
+            .filter(MessageStyle.style_name == style_name).one_or_none()
 
-    def create_multiple_days_discount(self, author_id, style_name, amount, date_start,
-                                      date_end):
-        author = self.get_author(author_id)
-        style_id = self.get_style_by_name(style_name)
-
-        discount = Discount(author_id, style_name, amount, date_start, date_end)
+    def create_multiple_days_discount(self, author_id, style_name, amount,
+                                      date_start, date_end):
+        style_id = self.get_style_by_name(style_name)["style_id"]
+        if (date_start < datetime.now() or date_end < date_start
+                or style_id not in self.get_author(author_id)["styles"]):
+            return None
+        discount = Discount(author_id, style_id, amount, date_start, date_end)
 
         self.session.add(discount)
         self.session.commit()
-
-
-
-
-

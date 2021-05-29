@@ -510,11 +510,14 @@ def multiple_days_discount():
 @APP.route("/multiple_days_discount", methods=["POST"])
 def multiple_days_discount_post():
     # http://127.0.0.1:8888/multiple_days_discount
-    From = datetime.strptime(request.form.get("From"), "%d.%m")
-    print(From)
-    To = datetime.strptime(request.form.get("To"))
-    print(To)
-    DataStore.db.create_multiple_days_discount(data.author_id, data.style_name, 5, From, To)
+    date_start = datetime.strptime(request.form.get("From"), "%y-%m-%d %h:%m")
+    # print(date_start)
+    date_end = datetime.strptime(request.form.get("To"), "%y-%m-%d %h:%m")
+    # print(date_end)
+    style_name = request.form.get("style")
+    DataStore.db.create_multiple_days_discount(data.author_id,
+                                               style_name, 50, date_start,
+                                               date_end)
     return redirect("/finish_author")
 
 
@@ -537,12 +540,8 @@ def one_day_discount():
 
 @APP.route("/one_day_discount", methods=["POST"])
 def one_day_discount_post():
-    from_ = datetime.strptime(request.form.get("from"), "%d.%m")
-    to_ = request.form.get("discount_number")
-    print(from_)
-    print(to_)
-    DataStore.db.create_one_day_discount(data.author_id, data.style_name,
-                                         to_, from_)
+    date_start = datetime.strptime(request.form.get("from"), "%y-%m-%d %h:%m")
+    DataStore.db.create_one_day_discount(data.author_id, 50, date_start)
     return redirect("/finish_author")
 
 
