@@ -26,10 +26,11 @@
 
     document.getElementById('signup').addEventListener('click', async function(evt){
         evt.preventDefault();
-        const name = document.getElementById('email').value;
-        const surname = document.getElementById('password').value;
+        const name = document.getElementById('name').value;
+        const surname = document.getElementById('surname').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        document.getElementById('container').classList = 'container disabled';
 
         let response = await fetch('/author_signup', {
             method: 'POST',
@@ -39,10 +40,9 @@
             body: JSON.stringify({name, surname, email, password})
         });
         response = await response.json();
-        localStorage.setItem('author_id', response.author_id);
-        document.getElementById('container').classList = 'container disabled';
         console.log(response);
         if (response.status === 'ok') {
+            localStorage.setItem('author_id', response.data.author_id);
             window.location = 'author_account';
         } else {
             document.getElementById('container').classList = 'container';

@@ -259,6 +259,25 @@ def search_results_12():
     return jsonify({'status': 'ok', 'users': users})
 
 
+@APP.route("/get_author_by_id", methods=["GET"])
+def get_author_by_id():
+    author_id = request.args.get("author_id")
+
+    if not author_id:
+        return jsonify({'status': 'error', 'reason': 'no author_id'})
+
+    try:
+        author_id = int(author_id)
+        author = DataStore.db.get_author(author_id)
+    except:
+        return jsonify({'status': 'error', 'reason': 'such author has not been found'})
+
+    return jsonify({'status': 'ok', 'data': {
+        'author_id': author.author_id,
+        'name': author.first_name + ' ' + author.last_name
+    }})
+
+
 @APP.route("/author_login", methods=["POST"])
 def login_author():
     # http://127.0.0.1:8888/author_login
@@ -291,10 +310,10 @@ def author_signup():
 def create_author():
     # http://127.0.0.1:8888/author_signup
     """Creating author account"""
-    name = request.form.get("name")
-    surname = request.form.get("surname")
-    email = request.form.get("email")
-    password = request.form.get("password")
+    name = request.json.get("name")
+    surname = request.json.get("surname")
+    email = request.json.get("email")
+    password = request.json.get("password")
 
     if not (name and surname and email and password):
         return jsonify({'status': 'error', 'reason': 'parameters are empty'})
@@ -307,16 +326,16 @@ def create_author():
         return jsonify({'status': 'error', 'reason': 'database error'})
 
 
-@APP.route("/author_account", methods=["GET"])
-def author_account():
-    # http://127.0.0.1:8888/author_account
+@APP.route("/choose_styles", methods=["GET"])
+def choose_styles():
+    # http://127.0.0.1:8888/choose_styles
     """Page for choosing style and then seeing possible tasks
 
     TODO:
         !!!Seeing possible tasks
         !!!Choose many styles
     """
-    return render_template("author_account.html")
+    return render_template("choose_styles.html")
 
 
 @APP.route("/author_account", methods=["POST"])
@@ -325,7 +344,7 @@ def author_account_post():
     print(style)
     data.style_name = [style]
     DataStore.db.add_skill(data.author_id, [style])
-    return redirect("/manage_task")
+    return redirect("/author_account")
 
 
 # @APP.route("/task", methods=["GET", "POST"])
@@ -339,21 +358,14 @@ def author_account_post():
 #     @Do yoou want to give some discount@"""
 #     return render_template("finishing_task.html")
 
-@APP.route("/manage_task")
-def manage_task():
-    # http://127.0.0.1:8888/manage_task
+@APP.route("/author_account")
+def author_account():
+    # http://127.0.0.1:8888/author_account
     """Manage page for authors (creating discount or team)
 
     TODO: !!!Do it as a menu buttom
     """
-    return render_template("manage_task.html")
-
-
-@APP.route("/discount")
-def discount():
-    # http://127.0.0.1:8888/discount
-    """Page for creating discount"""
-    return render_template("discount.html")
+    return render_template("author_account.html")
 
 
 @APP.route("/multiple_days_discount", methods=["GET"])

@@ -25,6 +25,7 @@
         evt.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        document.getElementById('container').classList = 'container disabled';
 
         let response = await fetch('/author_login', {
             method: 'POST',
@@ -34,10 +35,9 @@
             body: JSON.stringify({email, password})
         });
         response = await response.json();
-        localStorage.setItem('author_id', response.author_id);
-        document.getElementById('container').classList = 'container disabled';
         console.log(response);
         if (response.status === 'ok') {
+            localStorage.setItem('author_id', response.data.author_id);
             window.location = 'author_account';
         } else {
             document.getElementById('container').classList = 'container';

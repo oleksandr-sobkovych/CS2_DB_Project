@@ -1,35 +1,34 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/author_account.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
-
-
-    <div class="container" id="container">
-        <div class="form-container sign-in-container">
-            <form method="POST">
-                <h1>HI</h1>
-
-                <h2>Choose a Style:</h2>
-
-                <select name="style" id="style">
-                    <option value="Happy">Happy</option>
-                    <option value="Political">Political</option>
-                    <option value="Official">Official</option>
-                </select>
-                
-                <nav>
-                    <input type="submit" value="Submit" id="submit">
-                    <!-- <a href="manage_task" class="ghost" id="Submit">Submit</a> -->
-                </nav>
-            </form>
-        </div>
-    </div>
-
-
     <body>
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/style_submit.js') }}"></script> -->
+        <div class="container" id="container">
+            <div class="form-container sign-in-container">
+                    <h1 id="welcome-msg"></h1>
+                    <p id="id-info">Ваш айді</p>
 
+                    <nav class="mt-20">
+                        <a href="one_day_discount" class="custom-link">Створити одноденну знижку</a>
+                        <a href="multiple_days_discount" class="custom-link">Створити багатоденну знижку</a>
+                        <a href="create_team" class="custom-link">Створити команду</a>
+
+                        <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+                    </nav>
+            </div>
+        </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const authorID = localStorage.getItem('author_id');
+            console.log('authorID', authorID);
+            let response = await fetch(`/get_author_by_id?author_id=${authorID}`);
+            response = await response.json();
+            document.getElementById('welcome-msg').innerText = `Ласкаво просимо, ${response.data.name}`;
+            document.getElementById('id-info').innerText = `Ваш айді - ${response.data.author_id}`;
+        })
+    </script>
     </body>
 </html>
