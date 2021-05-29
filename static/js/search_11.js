@@ -1,20 +1,3 @@
-document.addEventListener("DOMContentLoaded", async function() {
-    const x = document.getElementById("select");
-    const response = await fetch('/customers');
-    const data = await response.json();
-
-    const promise = new Promise((resolve, reject) => {
-        resolve(data)
-    });
-
-    data["customers"].forEach(customer => {
-        var option = document.createElement("option");
-        option.text = customer.name;
-        option.setAttribute('id', customer.customer_id);
-        x.add(option);
-    });
-});
-
 function addItem(containerID, data) {
     let container = document.getElementById(containerID);
     if (Array.isArray(data)) {
@@ -32,13 +15,8 @@ function addItem(containerID, data) {
 document.getElementById('search').addEventListener('click', async function(evt){
     evt.preventDefault();
     document.getElementById('parameters').classList = 'width-50';
-    const select = document.getElementById('select');
-    const customerID = select.options[select.selectedIndex].getAttribute('id');
-    // const num = document.getElementById('maxNum').value;
-    const dateStart = document.getElementById('dateStart').value;
-    const dateEnd = document.getElementById('dateEnd').value;
 
-    let response = await fetch(`/search_results_2?customer_id=${customerID}&date_start=${dateStart}&date_end=${dateEnd}`);
+    let response = await fetch(`/search_results_11`);
     response = await response.json();
     console.log(response);
 
