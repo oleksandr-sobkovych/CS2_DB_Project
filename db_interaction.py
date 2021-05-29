@@ -3,7 +3,7 @@ Main module to interact with the database
 """
 from sqlalchemy.orm import sessionmaker
 from db_connect import engine
-from classes import Author, MessageStyle, Discount, Customer
+from classes import Author, MessageStyle, Discount, Customer, SocialMedia
 from datetime import timedelta, datetime
 
 
@@ -13,6 +13,8 @@ class DBInteraction:
         self.session = Session()
         self.engine = engine
         self.all_styles_id = None
+        self.views_exist = False
+        self.indices_exist = False
 
     def create_author_account(self, name, surname, password, email):
         cur_author = Author(name, surname, password, email)
@@ -27,6 +29,41 @@ class DBInteraction:
         self.session.commit()
 
         return cur_customer
+
+    def get_networks(self):
+        return self.session.query(SocialMedia).all()
+
+    def create_views(self):
+        return self.engine.execute("""
+        CREATE OR REPLACE VIEW joined_orders AS
+        SELECT po.order_id, t.*, po.message_id, po.created_date,
+        c.first_name AS c_first_name, c.last_name AS c_last_name,
+        a.author_id, a.first_name AS a_first_name, a.last_name AS a_last_name,
+        acc.*
+        FROM PlacedOrder po
+        INNER JOIN Account acc USING (account_id)
+        INNER JOIN Customer c USING (customer_id)
+        INNER JOIN Team t USING (team_id)
+        INNER JOIN AuthorTeam ta USING (team_id)
+        INNER JOIN Author a USING (author_id)
+        ORDER BY order_id;
+
+        CREATE OR REPLACE VIEW joined_access AS
+        SELECT access.access_id, access.access_granted_date, 
+        access.access_terminated_date, acc.*,
+        c.first_name AS c_first_name, c.last_name AS c_last_name,
+        a.author_id, a.first_name AS a_first_name, a.last_name AS a_last_name
+        FROM Access
+        INNER JOIN Account acc USING (account_id)
+        INNER JOIN Customer c USING (customer_id)
+        INNER JOIN Author a USING (author_id)
+        ORDER BY access_id;
+        """)
+
+    def get_customer_by_email_and_password(self, email, password):
+        return self.session.query(Customer) \
+            .filter(Customer.email == email and
+                    Customer.password == password).one_or_none()
 
     def get_author(self, author_id):
         return self.session.query(Author).filter(Author.author_id ==
@@ -124,6 +161,8 @@ class DBInteraction:
         """ % customer_id).all()
 
     def search_8(self, customer_id, author_id, date_start, date_end):
+        if not self.views_exist:
+            self.create_views()
         return self.engine.execute("""
             SELECT  (
                     SELECT COUNT(*)
@@ -168,6 +207,8 @@ class DBInteraction:
         """ % (customer_id, date_start, date_end)).all()
 
     def search_11(self, year):    # TODO: check this query
+        if not self.views_exist:
+            self.create_views()
         return self.engine.execute("""
             SELECT (
                 SELECT COUNT (*)

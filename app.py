@@ -634,13 +634,22 @@ def customer_login():
 @APP.route("/customer_login", methods=["POST"])
 def login_customer():
     """Login page for customers"""
-    email = request.form.get("email")
-    password = request.form.get("password")
+    """Login page for authors"""
+    email = request.json.get("email")
+    password = request.json.get("password")
 
-    print(email)
-    print(password)
+    if not (email and password):
+        return jsonify({'status': 'error', 'reason': 'no email or password'})
 
-    return redirect("/customer_account")
+    try:
+        data.customer_id = DataStore.db.get_customer_by_email_and_password(
+            email,
+                                                                       password).customer_id
+    except AttributeError:
+        return jsonify(
+            {'status': 'error', 'reason': 'such author has not been found'})
+
+    return jsonify({'status': 'ok', 'data': {'customer_id': data.customer_id}})
 
 
 @APP.route("/customer_signup", methods=["GET"])
@@ -652,18 +661,23 @@ def customer_signup():
 
 @APP.route("/customer_signup", methods=["POST"])
 def customer_signup_post():
-    """Login page for customers"""
-    name = request.form.get("name")
-    surname = request.form.get("surname")
-    email = request.form.get("email")
-    password = request.form.get("password")
+    # http://127.0.0.1:8888/author_signup
+    """Creating customer account"""
+    name = request.json.get("name")
+    surname = request.json.get("surname")
+    email = request.json.get("email")
+    password = request.json.get("password")
 
-    print(name)
-    print(surname)
-    print(email)
-    print(password)
-    data.customer_id = DataStore.db.create_customer(name, surname, password, email).customer_id
-    return redirect("/customer_account")
+    if not (name and surname and email and password):
+        return jsonify({'status': 'error', 'reason': 'parameters are empty'})
+
+    try:
+        data.customer_id = DataStore.db.create_customer(name, surname,
+                                                        password,
+                                                        email).customer_id
+        return redirect("/customer_account")
+    except:
+        return jsonify({'status': 'error', 'reason': 'database error'})
 
 
 @APP.route("/customer_account")
@@ -753,3 +767,6 @@ def finish_author():
 
 if __name__ == "__main__":
     APP.run(debug=True, port=8888)
+
+
+
