@@ -65,7 +65,8 @@ def search_1():
 
 @APP.route("/search_results_1", methods=["GET"])
 def search_results_1():
-    # http://127.0.0.1:8888/search_results_1?author_id=3&mess_num=1&date_start=2021-01-01&date_end=2021-06-01
+    # http://127.0.0.1:8888/search_results_1?author_id=3&mess_num=1
+    # &date_start=2021-01-01&date_end=2021-06-01
     author_id = request.args.get('author_id')
     mess_num = request.args.get('mess_num')
     date_start = request.args.get('date_start')
@@ -83,7 +84,8 @@ def search_results_1():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_1(author_id, mess_num, date_start, date_end)
+        users = DataStore.db.search_1(author_id, mess_num, date_start,
+                                      date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
@@ -96,7 +98,8 @@ def search_2():
 
 @APP.route("/search_results_2", methods=["GET"])
 def search_results_2():
-    # http://127.0.0.1:8888/search_results_2?customer_id=3&date_start=2021-01-01&date_end=2021-06-01
+    # http://127.0.0.1:8888/search_results_2?customer_id=3&date_start=2021
+    # -01-01&date_end=2021-06-01
     customer_id = request.args.get('customerID')
     date_start = request.args.get('dateStart')
     date_end = request.args.get('dateEnd')
@@ -113,7 +116,7 @@ def search_results_2():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_2(customer_id,date_start,date_end)
+        users = DataStore.db.search_2(customer_id, date_start, date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
@@ -123,14 +126,15 @@ def search_results_2():
 def search_3():
     return render_template("query3_min_n_customers.html")
 
+
 @APP.route("/search_results_3", methods=["GET"])
 def search_results_3():
-    # http://127.0.0.1:8888/search_results_3?date_start=2021-01-01&date_end=2021-06-01&ids=2
-    
+    # http://127.0.0.1:8888/search_results_3?date_start=2021-01-01&date_end
+    # =2021-06-01&ids=2
+
     numCustomer = request.args.get('numCustomer')
     date_start = request.args.get('dateStart')
     date_end = request.args.get('dateEnd')
-
 
     if not (numCustomer and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -144,7 +148,7 @@ def search_results_3():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_3(numCustomer,date_start,date_end)
+        users = DataStore.db.search_3(numCustomer, date_start, date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
@@ -154,14 +158,15 @@ def search_results_3():
 def search_4():
     return render_template("query4_customers_with_norders.html")
 
+
 @APP.route("/search_results_4", methods=["GET"])
 def search_results_4():
-    # http://127.0.0.1:8888/search_results_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
+    # http://127.0.0.1:8888/search_results_4?date_start=2021-01-01&date_end
+    # =2021-06-01&order_id=2
 
-    numOrders=request.args.get('numOrders')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
-
+    numOrders = request.args.get('numOrders')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
     if not (numOrders and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -175,24 +180,26 @@ def search_results_4():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_4(numOrders,date_start,date_end)
+        users = DataStore.db.search_4(numOrders, date_start, date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
 
 @APP.route("/search_5", methods=["GET"])
 def search_5():
     return render_template("query5_socialmedia_norders.html")
 
+
 @APP.route("/search_results_5", methods=["GET"])
 def search_results_5():
-    # http://127.0.0.1:8888/search_results_5?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&count=1
+    # http://127.0.0.1:8888/search_results_5?customer_id=1&date_start=2021
+    # -01-01&date_end=2021-06-01&count=1
 
     customer_id = request.args.get('customerID')
     numOrders = request.args.get('numOrders')
     date_start = request.args.get('dateStart')
     date_end = request.args.get('dateEnd')
-
 
     if not (customer_id and numOrders and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -206,7 +213,8 @@ def search_results_5():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_5(customer_id, numOrders,date_start,date_end)
+        users = DataStore.db.search_5(customer_id, numOrders, date_start,
+                                      date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
@@ -216,13 +224,14 @@ def search_results_5():
 def search_6():
     return render_template("query6_socialmedia_accounts.html")
 
+
 @APP.route("/search_results_6", methods=["GET"])
 def search_results_6():
-    # http://127.0.0.1:8888/search_results_6?date_start=2021-01-01&date_end=2021-06-01&author_id=2
-    author_id=request.args.get('authorID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
-      
+    # http://127.0.0.1:8888/search_results_6?date_start=2021-01-01&date_end
+    # =2021-06-01&author_id=2
+    author_id = request.args.get('authorID')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
     if not (author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -236,24 +245,24 @@ def search_results_6():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_6(author_id,date_start,date_end)
+        users = DataStore.db.search_6(author_id, date_start, date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
 
 @APP.route("/search_7", methods=["GET"])
 def search_7():
     return render_template("query7_access_given.html")
 
+
 @APP.route("/search_results_7", methods=["GET"])
 def search_results_7():
     # http://127.0.0.1:8888/search_results_7?customer_id=1
-    customer_id=request.args.get('customerID')
-      
+    customer_id = request.args.get('customerID')
 
     if not (customer_id):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
-
 
     try:
         users = DataStore.db.search_7(customer_id)
@@ -262,19 +271,20 @@ def search_results_7():
         return jsonify({'status': 'error', 'reason': 'database error'})
 
 
-
 @APP.route("/search_8", methods=["GET"])
 def search_8():
     return render_template("query8_common_actions.html")
 
+
 @APP.route("/search_results_8", methods=["GET"])
 def search_results_8():
-    # http://127.0.0.1:8888/search_results_8?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
-      
-    author_id=request.args.get('authorID')
-    customerID=request.args.get('customerID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    # http://127.0.0.1:8888/search_results_8?customer_id=1&date_start=2021
+    # -01-01&date_end=2021-06-01&author_id=2
+
+    author_id = request.args.get('authorID')
+    customerID = request.args.get('customerID')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
     if not (customerID and author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -288,22 +298,26 @@ def search_results_8():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_8(author_id,customerID, date_start,date_end)
+        users = DataStore.db.search_8(author_id, customerID, date_start,
+                                      date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
 
 @APP.route("/search_9", methods=["GET"])
 def search_9():
     return render_template("query9_each_social_media_nauthors.html")
 
+
 @APP.route("/search_results_9", methods=["GET"])
 def search_results_9():
-    # http://127.0.0.1:8888/search_results_9?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
-    author_id=request.args.get('authorID')
-    num_authors=request.args.get('num')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    # http://127.0.0.1:8888/search_results_9?customer_id=1&date_start=2021
+    # -01-01&date_end=2021-06-01&author_id=2
+    author_id = request.args.get('authorID')
+    num_authors = request.args.get('num')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
     if not (num_authors and author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -317,21 +331,25 @@ def search_results_9():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_9(author_id,num_authors, date_start,date_end)
+        users = DataStore.db.search_9(author_id, num_authors, date_start,
+                                      date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
 
 @APP.route("/search_10", methods=["GET"])
 def search_10():
     return render_template("query10_num_discounts.html")
 
+
 @APP.route("/search_results_10", methods=["GET"])
 def search_results_10():
-    # http://127.0.0.1:8888/search_results_10?customer_id=2&date_start=2021-01-01&date_end=2021-06-01
-    customer_id=request.args.get('customerID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    # http://127.0.0.1:8888/search_results_10?customer_id=2&date_start=2021
+    # -01-01&date_end=2021-06-01
+    customer_id = request.args.get('customerID')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
     if not (customer_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -345,14 +363,16 @@ def search_results_10():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_10(customer_id, date_start,date_end)
+        users = DataStore.db.search_10(customer_id, date_start, date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
+
 @APP.route("/search_11", methods=["GET"])
 def search_11():
     return render_template("query11_num_places.html")
+
 
 @APP.route("/search_results_11", methods=["GET"])
 def search_results_11():
@@ -362,16 +382,19 @@ def search_results_11():
     users = DataStore.db.search_11(year)
     return jsonify({'status': 'ok', 'users': users})
 
+
 @APP.route("/search_12", methods=["GET"])
 def search_12():
     return render_template("query12_social_medial_nmessage.html")
 
+
 @APP.route("/search_results_12", methods=["GET"])
 def search_results_12():
-    # http://127.0.0.1:8888/search_results_12?customer_id=1&date_start=2021-01-01&date_end=2021-06-01
-    author_id=request.args.get('authorID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    # http://127.0.0.1:8888/search_results_12?customer_id=1&date_start=2021
+    # -01-01&date_end=2021-06-01
+    author_id = request.args.get('authorID')
+    date_start = request.args.get('dateStart')
+    date_end = request.args.get('dateEnd')
 
     if not (author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -385,7 +408,7 @@ def search_results_12():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_12(author_id, date_start,date_end)
+        users = DataStore.db.search_12(author_id, date_start, date_end)
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
@@ -402,7 +425,8 @@ def get_author_by_id():
         author_id = int(author_id)
         author = DataStore.db.get_author(author_id)
     except:
-        return jsonify({'status': 'error', 'reason': 'such author has not been found'})
+        return jsonify(
+            {'status': 'error', 'reason': 'such author has not been found'})
 
     return jsonify({'status': 'ok', 'data': {
         'author_id': author.author_id,
@@ -426,7 +450,8 @@ def login_author():
         data.author_id = DataStore.db.get_author_by_email_and_password(email,
                                                                        password).author_id
     except AttributeError:
-        return jsonify({'status': 'error', 'reason': 'such author has not been found'})
+        return jsonify(
+            {'status': 'error', 'reason': 'such author has not been found'})
 
     return jsonify({'status': 'ok', 'data': {'author_id': data.author_id}})
 
@@ -452,10 +477,13 @@ def create_author():
 
     try:
         data.author_id = DataStore.db.create_author_account(name, surname,
-                                                        password, email)
+                                                            password, email)
         return jsonify({'status': 'ok'})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
+
+
 
 
 @APP.route("/choose_styles", methods=["GET"])
@@ -510,9 +538,9 @@ def multiple_days_discount():
 @APP.route("/multiple_days_discount", methods=["POST"])
 def multiple_days_discount_post():
     # http://127.0.0.1:8888/multiple_days_discount
-    date_start = datetime.strptime(request.form.get("From"), "%y-%m-%d %h:%m")
+    date_start = datetime.strptime(request.form.get("From"), '%Y-%m-%d')
     # print(date_start)
-    date_end = datetime.strptime(request.form.get("To"), "%y-%m-%d %h:%m")
+    date_end = datetime.strptime(request.form.get("To"), '%Y-%m-%d')
     # print(date_end)
     style_name = request.form.get("style")
     DataStore.db.create_multiple_days_discount(data.author_id,
@@ -540,7 +568,7 @@ def one_day_discount():
 
 @APP.route("/one_day_discount", methods=["POST"])
 def one_day_discount_post():
-    date_start = datetime.strptime(request.form.get("from"), "%y-%m-%d %h:%m")
+    date_start = datetime.strptime(request.form.get("from"), '%Y-%m-%d')
     DataStore.db.create_one_day_discount(data.author_id, 50, date_start)
     return redirect("/finish_author")
 
@@ -565,13 +593,22 @@ def customer_login():
 @APP.route("/customer_login", methods=["POST"])
 def login_customer():
     """Login page for customers"""
-    email = request.form.get("email")
-    password = request.form.get("password")
+    """Login page for authors"""
+    email = request.json.get("email")
+    password = request.json.get("password")
 
-    print(email)
-    print(password)
+    if not (email and password):
+        return jsonify({'status': 'error', 'reason': 'no email or password'})
 
-    return redirect("/customer_account")
+    try:
+        data.customer_id = DataStore.db.get_customer_by_email_and_password(
+            email,
+                                                                       password).customer_id
+    except AttributeError:
+        return jsonify(
+            {'status': 'error', 'reason': 'such author has not been found'})
+
+    return jsonify({'status': 'ok', 'data': {'customer_id': data.customer_id}})
 
 
 @APP.route("/customer_signup", methods=["GET"])
@@ -583,18 +620,23 @@ def customer_signup():
 
 @APP.route("/customer_signup", methods=["POST"])
 def customer_signup_post():
-    """Login page for customers"""
-    name = request.form.get("name")
-    surname = request.form.get("surname")
-    email = request.form.get("email")
-    password = request.form.get("password")
+    # http://127.0.0.1:8888/author_signup
+    """Creating customer account"""
+    name = request.json.get("name")
+    surname = request.json.get("surname")
+    email = request.json.get("email")
+    password = request.json.get("password")
 
-    print(name)
-    print(surname)
-    print(email)
-    print(password)
-    data.customer_id = DataStore.db.create_customer(name, surname, password, email).customer_id
-    return redirect("/customer_account")
+    if not (name and surname and email and password):
+        return jsonify({'status': 'error', 'reason': 'parameters are empty'})
+
+    try:
+        data.customer_id = DataStore.db.create_customer(name, surname,
+                                                        password,
+                                                        email).customer_id
+        return redirect("/customer_account")
+    except:
+        return jsonify({'status': 'error', 'reason': 'database error'})
 
 
 @APP.route("/customer_account")
@@ -657,6 +699,7 @@ def order_creating():
     print(team)
     print(media)
     return redirect("/finish_author")
+
 
 #
 # @APP.route("/give_access", methods=["GET", "POST"])
