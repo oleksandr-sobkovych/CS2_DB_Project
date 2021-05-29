@@ -1,28 +1,76 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/one_day_discount.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
-
-
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form method="POST">
-                <input  placeholder="From" name="From"/>
-                <input  placeholder="To" name="To"/>
-                <nav>
-                    <!-- <a href="finish_author" class="finish" id="finish">Done</a> -->
-                    <input type="submit" value="Finish" >
-                </nav>
-                
+            <h1 class="heading">Створити багатоденну знижку</h1>
+            <form id="search-form" class="mt-20">
+                <input type="date" class="param-input mt-20" placeholder="Дата початку" id="date_from"/>
+                <input type="date" class="param-input" placeholder="Дата кінця" id="date_to"/>
+                <input type="text" class="param-input" placeholder="Сума знижки" id="amount"/>
+                <select id="select">
+                    <option selected="selected" disabled>Стиль</option>
+                </select>
+
+                <button type="button" class="custom-btn" id="signup">Створити знижку</button>
+                <p id="message"></p>
+                <a href="/author_account" class="mt-20">Повернутися в аккаунт</a>
             </form>
         </div>
     </div>
 
+    <script>
 
-    <body>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const x = document.getElementById("select");
+        const author_id = localStorage.getItem('author_id');
+        const response = await fetch('/author_styles?author_id=' + author_id);
+        const data = await response.json();
 
+        const promise = new Promise((resolve, reject) => {
+            resolve(data)
+        });
+
+        data["styles"].forEach(style => {
+            var option = document.createElement("option");
+            option.text = style.name;
+            option.setAttribute('id', style.style_id);
+            x.add(option);
+        });
+    });
+
+    document.getElementById('signup').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const author_id = localStorage.getItem('author_id');
+        const date_from = document.getElementById('date_from').value;
+        const date_to = document.getElementById('date_to').value;
+        const amount = document.getElementById('amount').value;
+        const select = document.getElementById('select');
+        const style_id = select.options[select.selectedIndex].getAttribute('id');
+        document.getElementById('container').classList = 'container disabled';
+
+        let response = await fetch('/multiple_days_discount', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({author_id, date_from, date_to, amount, style_id})
+        });
+        response = await response.json();
+        console.log(response);
+        if (response.status === 'ok') {
+            alert('Багатоденну знижку успішно створено!');
+            window.location = 'author_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
     </body>
 </html>

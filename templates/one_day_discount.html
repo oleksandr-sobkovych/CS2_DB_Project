@@ -1,29 +1,51 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/one_day_discount.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
-
-
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form method="POST">
-                <h1>Hello</h1>
-                <input type="from" placeholder="From" name="from"/>
-                <input type="discount_number" placeholder="Percent of discount" name="discount_number"/>
-                <nav>
-                    <!-- <a href="finish_author" class="finish" id="finish">Done</a> -->
-                    <input type="submit" value="Submit" >
-                </nav>
-                
+            <h1 class="heading mt-20">Створити одноденну знижку</h1>
+            <form id="search-form">
+                <input type="date" class="param-input" placeholder="Дата початку" id="date_from"/>
+                <input type="text" class="param-input" placeholder="Сума знижки" id="amount"/>
+
+                <button type="button" class="custom-btn" id="signup">Створити знижку</button>
+                <p id="message"></p>
+                <a href="/author_account" class="mt-20">Повернутися в аккаунт</a>
             </form>
         </div>
     </div>
 
+    <script>
 
-    <body>
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/create_author.js') }}"></script> -->
+    document.getElementById('signup').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const author_id = localStorage.getItem('author_id');
+        const date_from = document.getElementById('date_from').value;
+        const amount = document.getElementById('amount').value;
+        document.getElementById('container').classList = 'container disabled';
 
+        let response = await fetch('/one_day_discount', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({author_id, date_from, amount})
+        });
+        response = await response.json();
+        console.log(response);
+        if (response.status === 'ok') {
+            alert('Ододенну знижку успішно створено!');
+            window.location = 'author_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
     </body>
 </html>
