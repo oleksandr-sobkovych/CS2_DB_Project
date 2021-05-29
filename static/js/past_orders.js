@@ -49,7 +49,6 @@ function addRow(tableID, data) {
 
 document.getElementById('formmm').addEventListener('submit', function(evt){
     evt.preventDefault();
-    console.log("KJJK")
     // console.log(document.getElementById("formmm").submit());
     console.log(document.getElementById('mySelect').value)
     console.log(document.getElementById('maxNum').value)
