@@ -55,7 +55,12 @@ def get_authors():
 
 @APP.route("/search_1", methods=["GET"])
 def search_1():
-    # http://127.0.0.1:8888/search_1?author_id=3&mess_num=1&date_start=2021-01-01&date_end=2021-06-01
+    return render_template("query1_past_orders.html")
+
+
+@APP.route("/search_results_1", methods=["GET"])
+def search_results_1():
+    # http://127.0.0.1:8888/search_results_1?author_id=3&mess_num=1&date_start=2021-01-01&date_end=2021-06-01
     author_id = request.args.get('author_id')
     mess_num = request.args.get('mess_num')
     date_start = request.args.get('date_start')
@@ -79,9 +84,9 @@ def search_1():
         return jsonify({'status': 'error', 'reason': 'database error'})
 
 
-@APP.route("/search_2", methods=["GET"])
-def search_2():
-    # http://127.0.0.1:8888/search_2?customer_id=3&date_start=2021-01-01&date_end=2021-06-01
+@APP.route("/search_results_2", methods=["GET"])
+def search_results_2():
+    # http://127.0.0.1:8888/search_results_2?customer_id=3&date_start=2021-01-01&date_end=2021-06-01
     customer_id = request.args.get('customer_id')
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -95,9 +100,9 @@ def search_2():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_3", methods=["GET"])
-def search_3():
-    # http://127.0.0.1:8888/search_3?date_start=2021-01-01&date_end=2021-06-01&ids=2
+@APP.route("/search_results_3", methods=["GET"])
+def search_results_3():
+    # http://127.0.0.1:8888/search_results_3?date_start=2021-01-01&date_end=2021-06-01&ids=2
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     ids = request.args.get('ids')
@@ -111,9 +116,9 @@ def search_3():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_4", methods=["GET"])
-def search_4():
-    # http://127.0.0.1:8888/search_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
+@APP.route("/search_results_4", methods=["GET"])
+def search_results_4():
+    # http://127.0.0.1:8888/search_results_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     order_id = request.args.get('order_id')
@@ -127,9 +132,9 @@ def search_4():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_5", methods=["GET"])
-def search_5():
-    # http://127.0.0.1:8888/search_5?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&count=1
+@APP.route("/search_results_5", methods=["GET"])
+def search_results_5():
+    # http://127.0.0.1:8888/search_results_5?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&count=1
     customer_id = request.args.get('customer_id')
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -144,9 +149,9 @@ def search_5():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_6", methods=["GET"])
-def search_6():
-    # http://127.0.0.1:8888/search_6?date_start=2021-01-01&date_end=2021-06-01&author_id=2
+@APP.route("/search_results_6", methods=["GET"])
+def search_results_6():
+    # http://127.0.0.1:8888/search_results_6?date_start=2021-01-01&date_end=2021-06-01&author_id=2
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     author_id = request.args.get('author_id')
@@ -160,18 +165,18 @@ def search_6():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_7", methods=["GET"])
-def search_7():
-    # http://127.0.0.1:8888/search_7?customer_id=1
+@APP.route("/search_results_7", methods=["GET"])
+def search_results_7():
+    # http://127.0.0.1:8888/search_results_7?customer_id=1
     customer_id = request.args.get('customer_id')
 
     users = DataStore.db.search_7(customer_id)
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_8", methods=["GET"])
-def search_8():
-    # http://127.0.0.1:8888/search_8?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
+@APP.route("/search_results_8", methods=["GET"])
+def search_results_8():
+    # http://127.0.0.1:8888/search_results_8?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
     customer_id = request.args.get('customer_id')
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -186,9 +191,9 @@ def search_8():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_9", methods=["GET"])
-def search_9():
-    # http://127.0.0.1:8888/search_9?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
+@APP.route("/search_results_9", methods=["GET"])
+def search_results_9():
+    # http://127.0.0.1:8888/search_results_9?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
     customer_id = request.args.get('customer_id')
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -203,9 +208,9 @@ def search_9():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_10", methods=["GET"])
-def search_10():
-    # http://127.0.0.1:8888/search_10?customer_id=2&date_start=2021-01-01&date_end=2021-06-01
+@APP.route("/search_results_10", methods=["GET"])
+def search_results_10():
+    # http://127.0.0.1:8888/search_results_10?customer_id=2&date_start=2021-01-01&date_end=2021-06-01
     customer_id = request.args.get('customer_id')
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -219,18 +224,18 @@ def search_10():
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_11", methods=["GET"])
-def search_11():
-    # http://127.0.0.1:8888/search_11?year=2021
+@APP.route("/search_results_11", methods=["GET"])
+def search_results_11():
+    # http://127.0.0.1:8888/search_results_11?year=2021
     year = request.args.get('year')
 
     users = DataStore.db.search_11(year)
     return jsonify({'status': 'ok', 'users': users})
 
 
-@APP.route("/search_12", methods=["GET"])
-def search_12():
-    # http://127.0.0.1:8888/search_12?customer_id=1&date_start=2021-01-01&date_end=2021-06-01
+@APP.route("/search_results_12", methods=["GET"])
+def search_results_12():
+    # http://127.0.0.1:8888/search_results_12?customer_id=1&date_start=2021-01-01&date_end=2021-06-01
     customer_id = request.args.get('customer_id')
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -497,18 +502,6 @@ def order_creating():
     print(team)
     print(media)
     return redirect("/finish_author")
-
-
-@APP.route("/past_orders")
-def past_orders():
-    # http://127.0.0.1:8888/past_orders
-    """Information about orders
-
-    !!!
-    TODO: Доробити сторінку
-    """
-    return render_template("query1_past_orders.html")
-
 
 #
 # @APP.route("/give_access", methods=["GET", "POST"])

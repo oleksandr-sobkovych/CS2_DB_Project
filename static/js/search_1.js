@@ -38,7 +38,7 @@ document.getElementById('search').addEventListener('click', async function(evt){
     const dateStart = document.getElementById('dateStart').value;
     const dateEnd = document.getElementById('dateEnd').value;
 
-    let response = await fetch(`/search_1?author_id=${authorID}&mess_num=${num}&date_start=${dateStart}&date_end=${dateEnd}`);
+    let response = await fetch(`/search_results_1?author_id=${authorID}&mess_num=${num}&date_start=${dateStart}&date_end=${dateEnd}`);
     response = await response.json();
     console.log(response);
 
