@@ -130,6 +130,10 @@ def search_results_3():
     return jsonify({'status': 'ok', 'users': users})
 
 
+@APP.route("/search_4", methods=["GET"])
+def search_4():
+    return render_template("query4_customers_with_norders.html")
+
 @APP.route("/search_results_4", methods=["GET"])
 def search_results_4():
     # http://127.0.0.1:8888/search_results_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
@@ -145,6 +149,9 @@ def search_results_4():
     users = DataStore.db.search_4(date_start, date_end, order_id)
     return jsonify({'status': 'ok', 'users': users})
 
+@APP.route("/search_5", methods=["GET"])
+def search_5():
+    return render_template("query5_socialmedia_norders.html")
 
 @APP.route("/search_results_5", methods=["GET"])
 def search_results_5():
@@ -163,6 +170,10 @@ def search_results_5():
     return jsonify({'status': 'ok', 'users': users})
 
 
+@APP.route("/search_6", methods=["GET"])
+def search_6():
+    return render_template("query6_socialmedia_accounts.html")
+
 @APP.route("/search_results_6", methods=["GET"])
 def search_results_6():
     # http://127.0.0.1:8888/search_results_6?date_start=2021-01-01&date_end=2021-06-01&author_id=2
@@ -178,6 +189,9 @@ def search_results_6():
     users = DataStore.db.search_6(date_start, date_end, author_id)
     return jsonify({'status': 'ok', 'users': users})
 
+@APP.route("/search_7", methods=["GET"])
+def search_7():
+    return render_template("query7_access_given.html")
 
 @APP.route("/search_results_7", methods=["GET"])
 def search_results_7():
@@ -209,6 +223,9 @@ def search_results_8():
     users = DataStore.db.search_8(customer_id, author_id, date_start, date_end)
     return jsonify({'status': 'ok', 'users': users})
 
+@APP.route("/search_9", methods=["GET"])
+def search_9():
+    return render_template("query9_each_social_media_nauthors.html")
 
 @APP.route("/search_results_9", methods=["GET"])
 def search_results_9():
@@ -226,6 +243,9 @@ def search_results_9():
     users = DataStore.db.search_9(customer_id)
     return jsonify({'status': 'ok', 'users': users})
 
+@APP.route("/search_10", methods=["GET"])
+def search_10():
+    return render_template("query10_num_discounts.html")
 
 @APP.route("/search_results_10", methods=["GET"])
 def search_results_10():
@@ -242,6 +262,9 @@ def search_results_10():
     users = DataStore.db.search_10(customer_id, date_start, date_end)
     return jsonify({'status': 'ok', 'users': users})
 
+@APP.route("/search_11", methods=["GET"])
+def search_11():
+    return render_template("query11_num_places.html")
 
 @APP.route("/search_results_11", methods=["GET"])
 def search_results_11():
@@ -251,6 +274,9 @@ def search_results_11():
     users = DataStore.db.search_11(year)
     return jsonify({'status': 'ok', 'users': users})
 
+@APP.route("/search_12", methods=["GET"])
+def search_12():
+    return render_template("query12_social_medial_nmessage.html")
 
 @APP.route("/search_results_12", methods=["GET"])
 def search_results_12():
