@@ -263,20 +263,21 @@ def search_results_12():
 def login_author():
     # http://127.0.0.1:8888/author_login
     """Login page for authors"""
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.json.get("email")
+    password = request.json.get("password")
 
     print(email)
     print(password)
+    if not (email and password):
+        return jsonify({'status': 'error', 'reason': 'no email or password'})
 
     try:
         data.author_id = DataStore.db.get_author_by_email_and_password(email,
                                                                        password).author_id
     except AttributeError:
-        return redirect("/author_login")
-    print(data.author_id)
+        return jsonify({'status': 'error', 'reason': 'such author has not been found'})
 
-    return redirect("/author_account")
+    return jsonify({'status': 'ok', 'data': {'author_id': data.author_id}})
 
 
 @APP.route("/author_signup", methods=["GET"])
@@ -295,14 +296,15 @@ def create_author():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    print(name)
-    print(surname)
-    print(email)
-    print(password)
+    if not (name and surname and email and password):
+        return jsonify({'status': 'error', 'reason': 'parameters are empty'})
 
-    data.author_id = DataStore.db.create_author_account(name, surname,
+    try:
+        data.author_id = DataStore.db.create_author_account(name, surname,
                                                         password, email)
-    return redirect("/author_account")
+        return jsonify({'status': 'ok'})
+    except:
+        return jsonify({'status': 'error', 'reason': 'database error'})
 
 
 @APP.route("/author_account", methods=["GET"])

@@ -1,25 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="../static/css/author_login.css">
-</head>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/style.css">
+    </head>
+
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form method="POST">
-                <h1>Sign up</h1>
-                <input type="name" placeholder="Name" name="name" />
-                <input type="surname" placeholder="Surname" name="surname" />
-                <input type="email" placeholder="Email" name="email" />
-                <input type="password" placeholder="Password" name="password" />
+            <form id="search-form">
+                <h1 class="heading">Створити аккаунт автора</h1>
+                <input type="text" class="param-input mt-20" placeholder="Ім'я" id="name"/>
+                <input type="text" class="param-input" placeholder="Прізвище" id="surname"/>
+                <input type="email" class="param-input" placeholder="Електронна пошта" id="email"/>
+                <input type="password" class="param-input" placeholder="Пароль" id="password"/>
 
-                <nav>
-                    <!-- <a href="author_account" class="ghost" id="signIn">Sign In</a> -->
-                    <input type="submit" value="Submit" >
-                </nav>
+                <button type="button" class="custom-btn" id="signup">Зареєструватися</button>
+                <p id="message"></p>
+                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+
             </form>
         </div>
     </div>
-<body>
 
-</body>
+    <script>
+
+    document.getElementById('signup').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const name = document.getElementById('email').value;
+        const surname = document.getElementById('password').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        let response = await fetch('/author_signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name, surname, email, password})
+        });
+        response = await response.json();
+        localStorage.setItem('author_id', response.author_id);
+        document.getElementById('container').classList = 'container disabled';
+        console.log(response);
+        if (response.status === 'ok') {
+            window.location = 'author_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
+    </body>
 </html>

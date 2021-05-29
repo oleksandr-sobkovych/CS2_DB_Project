@@ -1,26 +1,50 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/author_login.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form method="POST">
-                <h1>Sign in</h1>
-                <input type="email" placeholder="Email" name="email" />
-                <input type="password" placeholder="Password" name="password" />
-                <nav>
-                    <!-- <a href="author_account" class="ghost" id="signIn">Sign In</a> -->
-                    <input type="submit" value="Submit" >
-                </nav>
+            <form id="search-form">
+                <h1 class="heading">Увійти як автор</h1>
+                <input type="email" class="param-input mt-20" placeholder="Електронна пошта" id="email" value="james@ucu.edu.ua"/>
+                <input type="password" class="param-input" placeholder="Пароль" id="password" value="12345"/>
+
+                <button type="button" class="custom-btn" id="login">Увійти</button>
+                <p id="message"></p>
+                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
             </form>
         </div>
     </div>
 
+    <script>
 
-    <body>
-        <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script> -->
+    document.getElementById('login').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
+        let response = await fetch('/author_login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, password})
+        });
+        response = await response.json();
+        localStorage.setItem('author_id', response.author_id);
+        document.getElementById('container').classList = 'container disabled';
+        console.log(response);
+        if (response.status === 'ok') {
+            window.location = 'author_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
     </body>
 </html>
