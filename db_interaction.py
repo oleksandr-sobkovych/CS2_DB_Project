@@ -51,7 +51,7 @@ class DBInteraction:
 
     def search_2(self, customer_id, date_start, date_end):
         return self.engine.execute("""
-            SELECT author.first_name, author.last_name FROM Author author
+            SELECT CONCAT(author.first_name, ' ', author.last_name) as name FROM Author author
             INNER JOIN AuthorTeam ta ON ta.author_id = author.author_id
             INNER JOIN Team team ON team.team_id = ta.team_id
             INNER JOIN PlacedOrder ord ON ord.team_id = team.team_id

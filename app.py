@@ -53,6 +53,11 @@ def get_authors():
     return jsonify({'status': 'ok', 'authors': names})
 
 
+@APP.route("/queries", methods=["GET"])
+def queries():
+    return render_template("queries.html")
+
+
 @APP.route("/search_1", methods=["GET"])
 def search_1():
     return render_template("query1_past_orders.html")
@@ -82,6 +87,11 @@ def search_results_1():
         return jsonify({'status': 'ok', 'users': users})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
+
+@APP.route("/search_2", methods=["GET"])
+def search_2():
+    return render_template("query2_past_purchases.html")
 
 
 @APP.route("/search_results_2", methods=["GET"])
