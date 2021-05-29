@@ -34,11 +34,8 @@ document.getElementById('search').addEventListener('click', async function(evt){
     document.getElementById('parameters').classList = 'width-50';
     const select = document.getElementById('select');
     const customerID = select.options[select.selectedIndex].getAttribute('id');
-    // const num = document.getElementById('maxNum').value;
-    const dateStart = document.getElementById('dateStart').value;
-    const dateEnd = document.getElementById('dateEnd').value;
 
-    let response = await fetch(`/search_results_2?customer_id=${customerID}&date_start=${dateStart}&date_end=${dateEnd}`);
+    let response = await fetch(`/search_results_7?customer_id=${customerID}`);
     response = await response.json();
     console.log(response);
 

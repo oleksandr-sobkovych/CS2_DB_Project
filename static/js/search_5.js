@@ -34,11 +34,11 @@ document.getElementById('search').addEventListener('click', async function(evt){
     document.getElementById('parameters').classList = 'width-50';
     const select = document.getElementById('select');
     const customerID = select.options[select.selectedIndex].getAttribute('id');
-    // const num = document.getElementById('maxNum').value;
+    const numOrders = document.getElementById('numOrders').value;
     const dateStart = document.getElementById('dateStart').value;
     const dateEnd = document.getElementById('dateEnd').value;
 
-    let response = await fetch(`/search_results_2?customer_id=${customerID}&date_start=${dateStart}&date_end=${dateEnd}`);
+    let response = await fetch(`/search_results_5?customer_id=${customerID}&numOrders=${numOrders}&date_start=${dateStart}&date_end=${dateEnd}`);
     response = await response.json();
     console.log(response);
 

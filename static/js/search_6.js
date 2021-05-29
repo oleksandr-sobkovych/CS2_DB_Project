@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", async function() {
     const x = document.getElementById("select");
-    const response = await fetch('/customers');
+    const response = await fetch('/authors');
     const data = await response.json();
 
     const promise = new Promise((resolve, reject) => {
         resolve(data)
     });
 
-    data["customers"].forEach(customer => {
+    data["authors"].forEach(author => {
         var option = document.createElement("option");
-        option.text = customer.name;
-        option.setAttribute('id', customer.customer_id);
+        option.text = author.name;
+        option.setAttribute('id', author.author_id);
         x.add(option);
     });
 });
@@ -33,12 +33,11 @@ document.getElementById('search').addEventListener('click', async function(evt){
     evt.preventDefault();
     document.getElementById('parameters').classList = 'width-50';
     const select = document.getElementById('select');
-    const customerID = select.options[select.selectedIndex].getAttribute('id');
-    // const num = document.getElementById('maxNum').value;
+    const authorID = select.options[select.selectedIndex].getAttribute('id');
     const dateStart = document.getElementById('dateStart').value;
     const dateEnd = document.getElementById('dateEnd').value;
 
-    let response = await fetch(`/search_results_2?customer_id=${customerID}&date_start=${dateStart}&date_end=${dateEnd}`);
+    let response = await fetch(`/search_results_6?author_id=${authorID}&date_start=${dateStart}&date_end=${dateEnd}`);
     response = await response.json();
     console.log(response);
 
