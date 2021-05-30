@@ -389,10 +389,8 @@ def search_11():
 @APP.route("/search_results_11", methods=["GET"])
 def search_results_11():
     # http://127.0.0.1:8888/search_results_11?year=2021
-    year = request.args.get('year')
-
-    users = DataStore.db.search_11(year)
-    return jsonify({'status': 'ok', 'users': users})
+    orders = DataStore.db.search_11()
+    return jsonify({'status': 'ok', 'orders': orders})
 
 @APP.route("/search_12", methods=["GET"])
 def search_12():
