@@ -627,10 +627,7 @@ def one_day_discount_post():
 @APP.route("/login_or_create_customer")
 def login_or_create_customer():
     # http://127.0.0.1:8888/login_or_create_customer
-    """Choose login or create an new account as customer
-
-    TODO: !ПОПРАВИТИ CSS
-        """
+    """Choose login or create an new account as customer"""
     return render_template("login_or_create_customer.html")
 
 
@@ -653,13 +650,24 @@ def login_customer():
 
     try:
         data.customer_id = DataStore.db.get_customer_by_email_and_password(
-            email,
-                                                                       password).customer_id
+            email, password).customer_id
     except AttributeError:
         return jsonify(
-            {'status': 'error', 'reason': 'such author has not been found'})
+            {'status': 'error', 'reason': 'such customer has not been found'})
 
     return jsonify({'status': 'ok', 'data': {'customer_id': data.customer_id}})
+
+
+@APP.route("/choose_styles", methods=["POST"])
+def choose_author_styles():
+    """DB request for choosing styles."""
+    author_id = request.json.get("author_id")
+    styles = request.json.get("chosen_styles")
+    try:
+        DataStore.db.add_skill(author_id, styles)
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
 
 
 @APP.route("/customer_signup", methods=["GET"])

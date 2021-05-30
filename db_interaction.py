@@ -240,17 +240,17 @@ class DBInteraction:
             .filter(Author.email == email and
                     Author.password == password).first()
 
-    def add_skill(self, author_id, style_names):
+    def add_skill(self, author_id, style_ids):
         author = self.get_author(author_id)
 
-        for style in style_names:
+        for style_id in style_ids:
             # select style from the database
             selected_style = self.session.query(MessageStyle) \
-                .filter(MessageStyle.style_name == style).all()
+                .filter(MessageStyle.style_id == style_id).all()
 
             if not selected_style:
                 # insert this style if it is absent
-                selected_style = MessageStyle(style)
+                selected_style = MessageStyle(style_id)
                 self.session.add(selected_style)
             else:
                 # select first occurrence

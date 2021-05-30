@@ -1,35 +1,80 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/author_account.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
-
-
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form method="POST">
-                <h1>HI</h1>
-
-                <h2>Choose a Style:</h2>
-
-                <select name="style" id="style">
-                    <option value="Happy">Happy</option>
-                    <option value="Political">Political</option>
-                    <option value="Official">Official</option>
-                </select>
-                
-                <nav>
-                    <input type="submit" value="Submit" id="submit">
-                    <!-- <a href="manage_task" class="ghost" id="Submit">Submit</a> -->
-                </nav>
+            <h1 class="heading">Оберіть стилі, у яких Ви хочете працювати</h1>
+            <form id="search-form" class="mt-20">
+                <button type="button" class="custom-btn" id="continue">Зберегти та продовжити</button>
+                <p id="message"></p>
+                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
             </form>
         </div>
     </div>
 
+    <script>
 
-    <body>
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/style_submit.js') }}"></script> -->
+    document.addEventListener("DOMContentLoaded", async function() {
+        const x = document.getElementById("search-form");
+        const response = await fetch('/all_styles');
+        const data = await response.json();
 
+        const promise = new Promise((resolve, reject) => {
+            resolve(data)
+        });
+
+        data["styles"].reverse().forEach(style => {
+            var div = document.createElement("div");
+            var input = document.createElement("input");
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', style.style_id);
+            input.setAttribute('name', style.style_id);
+            var label = document.createElement("label");
+            label.setAttribute('for', style.style_id);
+            label.textContent = style.name;
+            div.prepend(label);
+            div.prepend(input);
+            x.prepend(div);
+        });
+    });
+
+    document.getElementById('continue').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const author_id = localStorage.getItem('author_id');
+
+        let radios = document.getElementsByTagName('input');
+        let chosen_styles = [];
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].type === 'checkbox' && radios[i].checked) {
+                chosen_styles.push(radios[i].id);
+            }
+        }
+
+        console.log('chosen_styles', chosen_styles);
+
+        document.getElementById('container').classList = 'container disabled';
+
+        let response = await fetch('/choose_styles', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({author_id, chosen_styles})
+        });
+        response = await response.json();
+        console.log(response);
+        if (response.status === 'ok') {
+            window.location = 'author_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
     </body>
 </html>

@@ -43,7 +43,7 @@
         console.log(response);
         if (response.status === 'ok') {
             localStorage.setItem('author_id', response.data.author_id);
-            window.location = 'author_account';
+            window.location = 'choose_styles';
         } else {
             document.getElementById('container').classList = 'container';
             document.getElementById('message').innerText = 'Error message: ' + response.reason;
