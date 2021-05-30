@@ -274,10 +274,11 @@ class DBInteraction:
         if not self.views_exist:
             self.create_views()
         return self.engine.execute("""
-            SELECT media_id, COUNT(*) AS num_entries FROM joined_orders
+            SELECT SM.media_name, COUNT(*) AS num_entries FROM joined_orders
+            JOIN SocialMedia SM on joined_orders.media_id = SM.media_id
             WHERE author_id = %s
             AND (created_date BETWEEN date '%s' AND date '%s')
-            GROUP BY media_id
+            GROUP BY SM.media_id
             HAVING MIN(team_count) >= %s;
         """ % (author_id, date_start, date_end, num_authors)).all()
 
