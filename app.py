@@ -645,10 +645,10 @@ def create_author():
 
     try:
         data.author_id = DataStore.db.create_author_account(name, surname,
-                                                        password, email)
-        return jsonify({'status': 'ok'})
-    except:
-        return jsonify({'status': 'error', 'reason': 'database error'})
+                                                        password, email).author_id
+        return jsonify({'status': 'ok', 'data': {'author_id': data.author_id}})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error : ' + str(e)})
 
 
 @APP.route("/choose_styles", methods=["GET"])
