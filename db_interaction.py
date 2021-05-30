@@ -198,19 +198,20 @@ class DBInteraction:
 
     def search_5(self, customer_id, date_start, date_end, count):
         return self.engine.execute("""
-            SELECT sm.media_id FROM SocialMedia sm
+            SELECT sm.media_name FROM SocialMedia sm
             INNER JOIN Account acc ON sm.media_id = acc.media_id
             INNER JOIN PlacedOrder ord ON acc.account_id = ord.account_id
             WHERE acc.customer_id = %s
                 AND ord.created_date >= '%s' 
                 AND ord.created_date < '%s'
-            GROUP BY sm.media_id
+            GROUP BY sm.media_name
             HAVING COUNT(*) > %s;
         """ % (customer_id, date_start, date_end, count)).all()
 
     def search_6(self, date_start, date_end, author_id):
         return self.engine.execute("""
-            SELECT acc.account_id FROM Account acc
+            SELECT sm.media_name, acc.account_id FROM Account acc
+            INNER JOIN SocialMedia sm ON sm.media_id = acc.media_id
             INNER JOIN Access acs ON acc.account_id = acs.account_id
             WHERE acs.access_granted_date <= '%s'
             AND acs.access_terminated_date >= '%s'
