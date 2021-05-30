@@ -104,13 +104,13 @@ class DBInteraction:
         return cur_order
 
     def get_authors_from_team(self, team_id):
-        self.session.query(Team).join(Author)\
+        self.session.query(Team).join(Author, Team.authors)\
             .filter(Team.team_id == team_id)\
             .with_entities(Author.author_id).all()
 
     def create_access(self, account_id, team_id, duration=36):
         author_ids = self.get_authors_from_team(team_id)
-
+        print('author_ids', author_ids)
         for author_id in author_ids:
             cur_access = Access(account_id, author_id, datetime.now(),
                                 datetime.now() + timedelta(hours=duration))

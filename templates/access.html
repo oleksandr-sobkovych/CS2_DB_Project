@@ -48,7 +48,7 @@
                 response = await response.json();
                 console.log(response);
                 if (response.status === 'ok') {
-                    alert('Доступ було забрано для замовлення ' + order_id);
+                    alert('Доступ було надано для замовлення ' + order_id);
                     window.location = 'customer_account';
                 } else {
                     document.getElementById('container').classList = 'container';
@@ -60,6 +60,26 @@
             btn_deny.setAttribute('id', order.order_id);
             btn_deny.setAttribute('action', 'deny');
             btn_deny.textContent = 'Забрати доступ';
+            btn_deny.addEventListener('click', async function() {
+                const order_id =  this.id;
+                const customer_id = localStorage.getItem('customer_id');
+                let response = await fetch('deny_access', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({customer_id, order_id})
+                });
+                response = await response.json();
+                console.log(response);
+                if (response.status === 'ok') {
+                    alert('Доступ було забрано для замовлення ' + order_id);
+                    window.location = 'customer_account';
+                } else {
+                    document.getElementById('container').classList = 'container';
+                    document.getElementById('message').innerText = 'Error message: ' + response.reason;
+                }
+            }, false);
             li.appendChild(btn_deny);
             li.appendChild(btn_give);
             x.appendChild(li);

@@ -125,7 +125,6 @@ def get_orders():
 def give_access():
     """DB request for adding medias and creating accounts in them."""
     customer_id = request.args.get('customer_id')
-    customer = DataStore.db.get_customer(customer_id)
     order_id = request.json.get("order_id")
 
     order = DataStore.db.get_order(order_id)
@@ -142,6 +141,29 @@ def give_access():
     try:
         access = DataStore.db.create_access(account_id, team_id)
         return jsonify({'status': 'ok', 'access_id': access.access_id})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
+
+
+@APP.route("/deny_access", methods=["POST"])
+def deny_access():
+    customer_id = request.args.get('customer_id')
+    order_id = request.json.get("order_id")
+
+    order = DataStore.db.get_order(order_id)
+
+    if not order:
+        return jsonify(
+            {'status': 'error',
+             'reason': 'order does not exist with this id'})
+
+    account_id = order.account_id
+    media_id = DataStore.db.get_account(account_id).media_id
+    team_id = order.team_id
+
+    try:
+        access = DataStore.db.deny_access(account_id, team_id)
+        return jsonify({'status': 'ok'})
     except Exception as e:
         return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
 
