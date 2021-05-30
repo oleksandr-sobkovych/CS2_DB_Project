@@ -699,7 +699,26 @@ def one_day_discount_post():
         return jsonify(
             {'status': 'error', 'reason': 'database error, ' + str(e)})
 
-    return redirect("/finish_author")
+
+@APP.route("/create_order", methods=["POST"])
+def create_order_post():
+    customer_id = request.json.get("customer_id")
+    style_id = request.json.get("style_id")
+    team_id = request.json.get("team_id")
+    media_id = request.json.get("media_id")
+
+    print(customer_id, style_id, team_id, media_id)
+
+    if not (style_id and team_id and media_id):
+        return jsonify({'status': 'error', 'reason': 'no parameters'})
+
+    account = DataStore.db.get_account_by_customer_and_media(int(customer_id), int(media_id))
+    try:
+        order = DataStore.db.create_order(account.account_id, team_id, style_id)
+    except AttributeError:
+        return jsonify({'status': 'error', 'reason': 'database error'})
+
+    return jsonify({'status': 'ok', 'data': {'order_id': order.order_id}})
 
 
 @APP.route("/login_or_create_customer")

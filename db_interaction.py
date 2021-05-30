@@ -62,7 +62,7 @@ class DBInteraction:
 
     def get_customer_by_email_and_password(self, email, password):
         return self.session.query(Customer) \
-            .filter(Customer.email == email and
+            .filter(Customer.email == email,
                     Customer.password == password).one_or_none()
 
     def get_author(self, author_id):
@@ -101,8 +101,8 @@ class DBInteraction:
         return cur_access
 
     def get_account_by_customer_and_media(self, customer_id, media_id):
-        return self.session.query(Account) \
-            .filter(Account.customer_id == customer_id and
+        return self.session.query(Account)\
+            .filter(Account.customer_id == customer_id,
                     Account.media_id == media_id).one_or_none()
 
     def get_customer_media(self, customer_id):

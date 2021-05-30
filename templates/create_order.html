@@ -81,26 +81,27 @@
 
     document.getElementById('create').addEventListener('click', async function(evt){
         evt.preventDefault();
-        const author_id = localStorage.getItem('author_id');
-        const date_from = document.getElementById('date_from').value;
-        const date_to = document.getElementById('date_to').value;
-        const amount = document.getElementById('amount').value;
-        const select = document.getElementById('select');
-        const style_id = select.options[select.selectedIndex].getAttribute('id');
+        const customer_id = localStorage.getItem('customer_id');
+        const select_style = document.getElementById('select_style');
+        const style_id = select_style.options[select_style.selectedIndex].getAttribute('id');
+        const select_team = document.getElementById('select_team');
+        const team_id = select_team.options[select_team.selectedIndex].getAttribute('id');
+        const select_media = document.getElementById('select_media');
+        const media_id = select_media.options[select_media.selectedIndex].getAttribute('id');
         document.getElementById('container').classList = 'container disabled';
 
-        let response = await fetch('/multiple_days_discount', {
+        let response = await fetch('/create_order', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({author_id, date_from, date_to, amount, style_id})
+            body: JSON.stringify({customer_id, style_id, team_id, media_id})
         });
         response = await response.json();
         console.log(response);
         if (response.status === 'ok') {
-            alert('Багатоденну знижку успішно створено!');
-            window.location = 'author_account';
+            alert('Ваше замовлення створено!');
+            window.location = 'customer_account';
         } else {
             document.getElementById('container').classList = 'container';
             document.getElementById('message').innerText = 'Error message: ' + response.reason;
