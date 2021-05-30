@@ -42,7 +42,7 @@ document.getElementById('search').addEventListener('click', async function(evt){
     if (response.status === 'ok') {
         document.getElementById('search_results').innerHTML = '';
         addItem('search_results', 'Результат пошуку:');
-        addItem("search_results", response.users.map(user => user.name));
+        addItem("search_results", response.users.map(user => user.first_name + " "+ user.last_name));
     } else {
         document.getElementById('search_results').innerHTML = '';
         addItem('search_results', ['За цими параметрами не було знайдено нічого.']);

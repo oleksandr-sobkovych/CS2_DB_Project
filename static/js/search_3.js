@@ -16,7 +16,7 @@ document.getElementById('search').addEventListener('click', async function(evt){
     evt.preventDefault();
     document.getElementById('parameters').classList = 'width-50';
     
-    const numCustomer = document.getElementById('numCustomer');
+    const numCustomer = document.getElementById('numCustomer').value;
 
     // const authorID = select.options[select.selectedIndex].getAttribute('id');
     // const num = document.getElementById('maxNum').value;
@@ -30,7 +30,7 @@ document.getElementById('search').addEventListener('click', async function(evt){
     if (response.status === 'ok') {
         document.getElementById('search_results').innerHTML = '';
         addItem('search_results', 'Результат пошуку:');
-        addItem("search_results", response.users.map(user => user.name));
+        addItem("search_results", response.users.map(user => user.full_name));
     } else {
         document.getElementById('search_results').innerHTML = '';
         addItem('search_results', ['За цими параметрами не було знайдено нічого.']);
