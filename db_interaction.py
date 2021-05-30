@@ -33,6 +33,27 @@ class DBInteraction:
     def get_networks(self):
         return self.session.query(SocialMedia).all()
 
+    def create_indexes(self):
+        return self.engine.execute("""
+            CREATE INDEX idx_order_date
+            ON placedorder(created_date);
+
+            CREATE INDEX idx_access_start_date
+            ON access(access_granted_date);
+
+            CREATE INDEX idx_access_end_date
+            ON access(access_terminated_date);
+
+            CREATE INDEX idx_account_find
+            ON account(customer_id, media_id);
+
+            CREATE INDEX idx_author_find
+            ON author(email, password);
+
+            CREATE INDEX idx_customer_find
+            ON customer(email, password);
+        """)
+
     def create_views(self):
         # self.views_exist = True
         return self.engine.execute("""
