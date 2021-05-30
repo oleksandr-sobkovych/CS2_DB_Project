@@ -65,6 +65,19 @@ def get_customers():
         })
     return jsonify({'status': 'ok', 'customers': names})
 
+
+@APP.route("/all_media", methods=["GET"])
+def get_all_media():
+    names = []
+    media = DataStore.db.get_networks()
+    for one_media in media:
+        names.append({
+            'name': one_media.media_name,
+            'media_id': one_media.media_id,
+        })
+    return jsonify({'status': 'ok', 'media': names})
+
+
 @APP.route("/all_styles", methods=["GET"])
 def get_all_styles():
     names = []
@@ -115,9 +128,6 @@ def search_results_1():
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
 
-    print(date_start)
-    print(date_end)
-
     if not (author_id and mess_num and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
@@ -144,12 +154,9 @@ def search_2():
 @APP.route("/search_results_2", methods=["GET"])
 def search_results_2():
     # http://127.0.0.1:8888/search_results_2?customer_id=3&date_start=2021-01-01&date_end=2021-06-01
-    customer_id = request.args.get('customerID')
-    date_start = request.args.get('dateStart')
-    date_end = request.args.get('dateEnd')
-    print(customer_id)
-    print(date_start)
-    print(date_end)
+    customer_id = request.args.get('customer_id')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
     if not (customer_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
@@ -162,7 +169,7 @@ def search_results_2():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_2(customer_id,date_start,date_end)
+        users = DataStore.db.search_2(int(customer_id),date_start,date_end)
         return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
@@ -177,10 +184,8 @@ def search_results_3():
     # http://127.0.0.1:8888/search_results_3?date_start=2021-01-01&date_end=2021-06-01&ids=2
     
     numCustomer = request.args.get('numCustomer')
-    date_start = request.args.get('dateStart')
-    date_end = request.args.get('dateEnd')
-
-
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
     if not (numCustomer and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
@@ -193,8 +198,8 @@ def search_results_3():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_3(numCustomer,date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        users = DataStore.db.search_3(date_start,date_end,numCustomer)
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -208,10 +213,8 @@ def search_results_4():
     # http://127.0.0.1:8888/search_results_4?date_start=2021-01-01&date_end=2021-06-01&order_id=2
 
     numOrders = request.args.get('numOrders')
-    date_start = request.args.get('dateStart')
-    date_end = request.args.get('dateEnd')
-
-
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
     if not (numOrders and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
@@ -224,8 +227,8 @@ def search_results_4():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_4(numOrders,date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        users = DataStore.db.search_4(date_start,date_end,numOrders)
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -237,10 +240,10 @@ def search_5():
 def search_results_5():
     # http://127.0.0.1:8888/search_results_5?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&count=1
 
-    customer_id = request.args.get('customerID')
+    customer_id = request.args.get('customer_id')
     numOrders = request.args.get('numOrders')
-    date_start = request.args.get('dateStart')
-    date_end = request.args.get('dateEnd')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
 
 
     if not (customer_id and numOrders and date_start and date_end):
@@ -255,8 +258,8 @@ def search_results_5():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_5(customer_id, numOrders,date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        users = DataStore.db.search_5(customer_id,date_start,date_end, numOrders)
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -268,9 +271,9 @@ def search_6():
 @APP.route("/search_results_6", methods=["GET"])
 def search_results_6():
     # http://127.0.0.1:8888/search_results_6?date_start=2021-01-01&date_end=2021-06-01&author_id=2
-    author_id=request.args.get('authorID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    author_id=request.args.get('author_id')
+    date_start=request.args.get('date_start')
+    date_end=request.args.get('date_end')
       
 
     if not (author_id and date_start and date_end):
@@ -285,8 +288,8 @@ def search_results_6():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_6(author_id,date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        users = DataStore.db.search_6(date_start,date_end, author_id)
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -297,7 +300,7 @@ def search_7():
 @APP.route("/search_results_7", methods=["GET"])
 def search_results_7():
     # http://127.0.0.1:8888/search_results_7?customer_id=1
-    customer_id=request.args.get('customerID')
+    customer_id=request.args.get('customer_id')
       
 
     if not (customer_id):
@@ -306,7 +309,7 @@ def search_results_7():
 
     try:
         users = DataStore.db.search_7(customer_id)
-        return jsonify({'status': 'ok', 'users': users})
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -320,10 +323,10 @@ def search_8():
 def search_results_8():
     # http://127.0.0.1:8888/search_results_8?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
       
-    author_id=request.args.get('authorID')
+    author_id=request.args.get('author_id')
     customerID=request.args.get('customerID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    date_start=request.args.get('date_start')
+    date_end=request.args.get('date_end')
 
     if not (customerID and author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -337,8 +340,8 @@ def search_results_8():
         return jsonify({'status': 'error', 'reason': 'wrong date'})
 
     try:
-        users = DataStore.db.search_8(author_id,customerID, date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        users = DataStore.db.search_8(customerID,author_id, date_start,date_end)
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -349,10 +352,10 @@ def search_9():
 @APP.route("/search_results_9", methods=["GET"])
 def search_results_9():
     # http://127.0.0.1:8888/search_results_9?customer_id=1&date_start=2021-01-01&date_end=2021-06-01&author_id=2
-    author_id=request.args.get('authorID')
-    num_authors=request.args.get('num')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    author_id=request.args.get('author_id')
+    num_authors=request.args.get('num_authors')
+    date_start=request.args.get('date_start')
+    date_end=request.args.get('date_end')
 
     if not (num_authors and author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -367,7 +370,7 @@ def search_results_9():
 
     try:
         users = DataStore.db.search_9(author_id,num_authors, date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -379,8 +382,8 @@ def search_10():
 def search_results_10():
     # http://127.0.0.1:8888/search_results_10?customer_id=2&date_start=2021-01-01&date_end=2021-06-01
     customer_id=request.args.get('customerID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    date_start=request.args.get('date_start')
+    date_end=request.args.get('date_end')
 
     if not (customer_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -395,7 +398,7 @@ def search_results_10():
 
     try:
         users = DataStore.db.search_10(customer_id, date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
@@ -409,7 +412,7 @@ def search_results_11():
     year = request.args.get('year')
 
     users = DataStore.db.search_11(year)
-    return jsonify({'status': 'ok', 'users': users})
+    return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
 
 @APP.route("/search_12", methods=["GET"])
 def search_12():
@@ -419,8 +422,8 @@ def search_12():
 def search_results_12():
     # http://127.0.0.1:8888/search_results_12?customer_id=1&date_start=2021-01-01&date_end=2021-06-01
     author_id=request.args.get('authorID')
-    date_start=request.args.get('dateStart')
-    date_end=request.args.get('dateEnd')
+    date_start=request.args.get('date_start')
+    date_end=request.args.get('date_end')
 
     if not (author_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
@@ -435,9 +438,28 @@ def search_results_12():
 
     try:
         users = DataStore.db.search_12(author_id, date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
+
+@APP.route("/get_customer_by_id", methods=["GET"])
+def get_customer_by_id():
+    customer_id = request.args.get("customer_id")
+
+    if not customer_id:
+        return jsonify({'status': 'error', 'reason': 'no customer_id'})
+
+    try:
+        customer_id = int(customer_id)
+        customer = DataStore.db.get_customer(customer_id)
+    except:
+        return jsonify({'status': 'error', 'reason': 'such customer has not been found'})
+
+    return jsonify({'status': 'ok', 'data': {
+        'author_id': customer.customer_id,
+        'name': customer.first_name + ' ' + customer.last_name
+    }})
 
 
 @APP.route("/get_author_by_id", methods=["GET"])
@@ -634,10 +656,7 @@ def one_day_discount_post():
 @APP.route("/login_or_create_customer")
 def login_or_create_customer():
     # http://127.0.0.1:8888/login_or_create_customer
-    """Choose login or create an new account as customer
-
-    TODO: !ПОПРАВИТИ CSS
-        """
+    """Choose login or create an new account as customer"""
     return render_template("login_or_create_customer.html")
 
 
@@ -651,7 +670,6 @@ def customer_login():
 @APP.route("/customer_login", methods=["POST"])
 def login_customer():
     """Login page for customers"""
-    """Login page for authors"""
     email = request.json.get("email")
     password = request.json.get("password")
 
@@ -660,13 +678,24 @@ def login_customer():
 
     try:
         data.customer_id = DataStore.db.get_customer_by_email_and_password(
-            email,
-                                                                       password).customer_id
+            email, password).customer_id
     except AttributeError:
         return jsonify(
-            {'status': 'error', 'reason': 'such author has not been found'})
+            {'status': 'error', 'reason': 'such customer has not been found'})
 
     return jsonify({'status': 'ok', 'data': {'customer_id': data.customer_id}})
+
+
+@APP.route("/choose_styles", methods=["POST"])
+def choose_author_styles():
+    """DB request for choosing styles."""
+    author_id = request.json.get("author_id")
+    styles = request.json.get("chosen_styles")
+    try:
+        DataStore.db.add_skill(author_id, styles)
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
 
 
 @APP.route("/customer_signup", methods=["GET"])
@@ -692,28 +721,22 @@ def customer_signup_post():
         data.customer_id = DataStore.db.create_customer(name, surname,
                                                         password,
                                                         email).customer_id
-        return redirect("/customer_account")
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
+    return jsonify({'status': 'ok', 'customer_id': data.customer_id})
+
+
+@APP.route("/choose_media")
+def choose_media():
+    """Cusomer page"""
+    return render_template("choose_media.html")
 
 
 @APP.route("/customer_account")
 def customer_account():
-    # http://127.0.0.1:8888/customer_account
-    """Cusomer page
-
-    TODO
-        !!!Доробти, щоб після вибору мережі, було вижно одразу доступні команди
-        !!!Кнопка додати мережу
-    """
-    return render_template("customer_account.html")
-
-
-@APP.route("/user_space")
-def user_space():
-    # http://127.0.0.1:8888/user_space
     """User page"""
-    return render_template("user_space.html")
+    return render_template("customer_account.html")
 
 
 # @APP.route("/add_styles", methods=["GET", "POST"])
