@@ -52,6 +52,18 @@ def get_authors():
         })
     return jsonify({'status': 'ok', 'authors': names})
 
+@APP.route("/customers", methods=["GET"])
+def get_customers():
+    # http://127.0.0.1:8888/authors
+    names = []
+    customers = DataStore.db.get_customers()
+    for customer in customers:
+        names.append({
+            'name': "%s %s" % (customer.first_name, customer.last_name),
+            'customer_id': customer.customer_id,
+            'email': customer.email,
+        })
+    return jsonify({'status': 'ok', 'customers': names})
 
 @APP.route("/all_styles", methods=["GET"])
 def get_all_styles():
@@ -116,7 +128,7 @@ def search_results_1():
 
     try:
         users = DataStore.db.search_1(author_id, mess_num, date_start, date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 

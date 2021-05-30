@@ -72,6 +72,9 @@ class DBInteraction:
     def get_authors(self):
         return self.session.query(Author).all()
 
+    def get_customers(self):
+        return self.session.query(Customer).all()
+
     def get_styles(self):
         return self.session.query(MessageStyle).all()
 
