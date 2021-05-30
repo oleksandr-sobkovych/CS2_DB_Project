@@ -193,7 +193,8 @@ class DBInteraction:
 
     def search_6(self, date_start, date_end, author_id):
         return self.engine.execute("""
-            SELECT acc.account_id FROM Account acc
+            SELECT sm.media_name, acc.account_id FROM Account acc
+            INNER JOIN SocialMedia sm ON sm.media_id = acc.media_id
             INNER JOIN Access acs ON acc.account_id = acs.account_id
             WHERE acs.access_granted_date <= '%s'
             AND acs.access_terminated_date >= '%s'
