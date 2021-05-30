@@ -1,30 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="../static/css/author_login.css">
+        <link rel="stylesheet" href="../static/css/style.css">
     </head>
 
-
-
+    <body>
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form method="POST">
-                <h1>Sign Up</h1>
-                <input type="name" placeholder="Name" name="name" />
-                <input type="surname" placeholder="Surname" name="surname" />
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
-                <nav>
-                    <input type="submit" value="Submit" >
-                    <!--<a href="customer_account" class="ghost" id="signIn">Sign In</a>-->
-                </nav>
+            <form id="search-form">
+                <h1 class="heading">Створити аккаунт клієнта</h1>
+                <input type="text" class="param-input mt-20" placeholder="Ім'я" id="name"/>
+                <input type="text" class="param-input" placeholder="Прізвище" id="surname"/>
+                <input type="email" class="param-input" placeholder="Електронна пошта" id="email"/>
+                <input type="password" class="param-input" placeholder="Пароль" id="password"/>
+
+                <button type="button" class="custom-btn" id="signup">Зареєструватися</button>
+                <p id="message"></p>
+                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+
             </form>
         </div>
     </div>
 
+    <script>
 
-    <body>
-    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>-->
+    document.getElementById('signup').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const name = document.getElementById('name').value;
+        const surname = document.getElementById('surname').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        document.getElementById('container').classList = 'container disabled';
 
+        let response = await fetch('/customer_signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name, surname, email, password})
+        });
+        response = await response.json();
+        console.log(response);
+        if (response.status === 'ok') {
+            localStorage.setItem('customer_id', response.customer_id);
+            window.location = 'customer_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
     </body>
 </html>

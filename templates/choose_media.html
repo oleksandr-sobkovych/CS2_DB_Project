@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/style.css">
+    </head>
+
+    <body>
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            <h1 class="heading">Оберіть соцмережі, які Ви хочете підключити</h1>
+            <form id="search-form" class="mt-20">
+                <button type="button" class="custom-btn" id="continue">Зберегти та продовжити</button>
+                <p id="message"></p>
+                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        const x = document.getElementById("search-form");
+        const response = await fetch('/all_media');
+        const data = await response.json();
+
+        const promise = new Promise((resolve, reject) => {
+            resolve(data)
+        });
+
+        data["media"].reverse().forEach(media => {
+            var div = document.createElement("div");
+            var input = document.createElement("input");
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', media.media_id);
+            input.setAttribute('name', media.media_id);
+            var label = document.createElement("label");
+            label.setAttribute('for', media.media_id);
+            label.textContent = media.name;
+            div.prepend(label);
+            div.prepend(input);
+            x.prepend(div);
+        });
+    });
+
+    document.getElementById('continue').addEventListener('click', async function(evt){
+        evt.preventDefault();
+        const customer_id = localStorage.getItem('customer_id');
+
+        let radios = document.getElementsByTagName('input');
+        let chosen_media = [];
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].type === 'checkbox' && radios[i].checked) {
+                chosen_media.push(radios[i].id);
+            }
+        }
+
+        console.log('chosen_media', chosen_media);
+
+        document.getElementById('container').classList = 'container disabled';
+
+        let response = await fetch('/choose_media', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({customer_id, chosen_media})
+        });
+        response = await response.json();
+        console.log(response);
+        if (response.status === 'ok') {
+            window.location = 'customer_account';
+        } else {
+            document.getElementById('container').classList = 'container';
+            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+        }
+    });
+
+    </script>
+    </body>
+</html>

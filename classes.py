@@ -80,6 +80,7 @@ class Customer(Base):
     customer_id = Column(Integer, primary_key=True)
     first_name = Column('first_name', String(100))
     last_name = Column('last_name', String(100))
+    password = Column('password', String(20))
     email = Column('email', String(320))
 
     def __init__(self, first_name, last_name, password, email):
@@ -93,7 +94,7 @@ class SocialMedia(Base):
     __tablename__ = 'socialmedia'
 
     media_id = Column(Integer, primary_key=True)
-    media_name = Column('first_name', String(100))
+    media_name = Column('media_name', String(100))
 
     def __init__(self, media_name):
         self.media_name = media_name

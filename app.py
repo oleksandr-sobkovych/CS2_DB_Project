@@ -52,6 +52,7 @@ def get_authors():
         })
     return jsonify({'status': 'ok', 'authors': names})
 
+
 @APP.route("/customers", methods=["GET"])
 def get_customers():
     # http://127.0.0.1:8888/authors
@@ -64,6 +65,19 @@ def get_customers():
             'email': customer.email,
         })
     return jsonify({'status': 'ok', 'customers': names})
+
+
+@APP.route("/all_media", methods=["GET"])
+def get_all_media():
+    names = []
+    media = DataStore.db.get_networks()
+    for one_media in media:
+        names.append({
+            'name': one_media.media_name,
+            'media_id': one_media.media_id,
+        })
+    return jsonify({'status': 'ok', 'media': names})
+
 
 @APP.route("/all_styles", methods=["GET"])
 def get_all_styles():
@@ -433,6 +447,25 @@ def search_results_12():
         return jsonify({'status': 'error', 'reason': 'database error'})
 
 
+@APP.route("/get_customer_by_id", methods=["GET"])
+def get_customer_by_id():
+    customer_id = request.args.get("customer_id")
+
+    if not customer_id:
+        return jsonify({'status': 'error', 'reason': 'no customer_id'})
+
+    try:
+        customer_id = int(customer_id)
+        customer = DataStore.db.get_customer(customer_id)
+    except:
+        return jsonify({'status': 'error', 'reason': 'such customer has not been found'})
+
+    return jsonify({'status': 'ok', 'data': {
+        'author_id': customer.customer_id,
+        'name': customer.first_name + ' ' + customer.last_name
+    }})
+
+
 @APP.route("/get_author_by_id", methods=["GET"])
 def get_author_by_id():
     author_id = request.args.get("author_id")
@@ -641,7 +674,6 @@ def customer_login():
 @APP.route("/customer_login", methods=["POST"])
 def login_customer():
     """Login page for customers"""
-    """Login page for authors"""
     email = request.json.get("email")
     password = request.json.get("password")
 
@@ -693,28 +725,22 @@ def customer_signup_post():
         data.customer_id = DataStore.db.create_customer(name, surname,
                                                         password,
                                                         email).customer_id
-        return redirect("/customer_account")
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
+
+    return jsonify({'status': 'ok', 'customer_id': data.customer_id})
+
+
+@APP.route("/choose_media")
+def choose_media():
+    """Cusomer page"""
+    return render_template("choose_media.html")
 
 
 @APP.route("/customer_account")
 def customer_account():
-    # http://127.0.0.1:8888/customer_account
-    """Cusomer page
-
-    TODO
-        !!!Доробти, щоб після вибору мережі, було вижно одразу доступні команди
-        !!!Кнопка додати мережу
-    """
-    return render_template("customer_account.html")
-
-
-@APP.route("/user_space")
-def user_space():
-    # http://127.0.0.1:8888/user_space
     """User page"""
-    return render_template("user_space.html")
+    return render_template("customer_account.html")
 
 
 # @APP.route("/add_styles", methods=["GET", "POST"])

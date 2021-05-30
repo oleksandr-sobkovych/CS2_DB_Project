@@ -69,6 +69,10 @@ class DBInteraction:
         return self.session.query(Author).filter(Author.author_id ==
                                                  author_id).one_or_none()
 
+    def get_customer(self, customer_id):
+        return self.session.query(Customer).filter(Customer.customer_id ==
+                                                 customer_id).one_or_none()
+
     def get_authors(self):
         return self.session.query(Author).all()
 
