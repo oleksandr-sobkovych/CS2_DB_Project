@@ -445,7 +445,7 @@ def search_10():
 @APP.route("/search_results_10", methods=["GET"])
 def search_results_10():
     # http://127.0.0.1:8888/search_results_10?customer_id=2&date_start=2021-01-01&date_end=2021-06-01
-    customer_id=request.args.get('customerID')
+    customer_id=request.args.get('customer_id')
     date_start=request.args.get('date_start')
     date_end=request.args.get('date_end')
 
@@ -485,7 +485,7 @@ def search_12():
 @APP.route("/search_results_12", methods=["GET"])
 def search_results_12():
     # http://127.0.0.1:8888/search_results_12?customer_id=1&date_start=2021-01-01&date_end=2021-06-01
-    author_id=request.args.get('authorID')
+    author_id=request.args.get('author_id')
     date_start=request.args.get('date_start')
     date_end=request.args.get('date_end')
 
