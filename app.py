@@ -79,6 +79,38 @@ def get_all_media():
     return jsonify({'status': 'ok', 'media': names})
 
 
+@APP.route("/customer_media", methods=["GET"])
+def get_customer_media():
+    customer_id = request.args.get('customer_id')
+    customer = DataStore.db.get_customer(customer_id)
+
+    if not customer:
+        return jsonify(
+            {'status': 'error', 'reason': 'author does not exist with this id'})
+
+    names = []
+    media = DataStore.db.get_networks()
+    for one_media in media:
+        if one_media.media_id in [m.media_id for m in customer.media]:
+            names.append({
+                'name': one_media.media_name,
+                'media_id': one_media.media_id,
+            })
+    return jsonify({'status': 'ok', 'media': names})
+
+
+@APP.route("/all_teams", methods=["GET"])
+def get_all_teams():
+    names = []
+    teams = DataStore.db.get_teams()
+    for team in teams:
+        names.append({
+            'name': team.team_name,
+            'team_id': team.team_id,
+        })
+    return jsonify({'status': 'ok', 'teams': names})
+
+
 @APP.route("/all_styles", methods=["GET"])
 def get_all_styles():
     names = []

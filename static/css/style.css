@@ -89,7 +89,7 @@ a {
 	min-height: 480px;
 }
 
-#select {
+.custom-select, #select {
 	background-color: #eee;
     border: none;
     padding: 12px 15px;

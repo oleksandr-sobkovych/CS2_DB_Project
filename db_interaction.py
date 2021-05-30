@@ -3,7 +3,7 @@ Main module to interact with the database
 """
 from sqlalchemy.orm import sessionmaker
 from db_connect import engine
-from classes import Author, MessageStyle, Discount, Customer, SocialMedia
+from classes import Author, MessageStyle, Discount, Customer, SocialMedia, Team
 from datetime import timedelta, datetime
 
 
@@ -72,6 +72,9 @@ class DBInteraction:
     def get_customer(self, customer_id):
         return self.session.query(Customer).filter(Customer.customer_id ==
                                                  customer_id).one_or_none()
+
+    def get_teams(self):
+        return self.session.query(Team).all()
 
     def get_authors(self):
         return self.session.query(Author).all()
