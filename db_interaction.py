@@ -3,7 +3,7 @@ Main module to interact with the database
 """
 from sqlalchemy.orm import sessionmaker
 from db_connect import engine
-from classes import Author, MessageStyle, Discount, Customer, SocialMedia, Team
+from classes import Author, MessageStyle, Discount, Customer, SocialMedia, Team, Access, Account, PlacedOrder
 from datetime import timedelta, datetime
 
 
@@ -84,6 +84,45 @@ class DBInteraction:
 
     def get_styles(self):
         return self.session.query(MessageStyle).all()
+
+    def create_order(self, account_id, team_id, msg_id):
+        cur_order = PlacedOrder(account_id, team_id, msg_id, datetime.now())
+        self.session.add(cur_order)
+        self.session.commit()
+
+        return cur_order
+
+    def create_access(self, account_id, author_id, duration_hrs):
+        cur_access = Access(account_id, author_id, datetime.now(),
+                            datetime.now() + timedelta(hours=duration_hrs))
+        self.session.add(cur_access)
+        self.session.commit()
+
+        return cur_access
+
+    def get_account_by_customer_and_media(self, customer_id, media_id):
+        return self.session.query(Account) \
+            .filter(Account.customer_id == customer_id and
+                    Account.media_id == media_id).one_or_none()
+
+    def get_customer_media(self, customer_id):
+        return self.engine.execute("""
+                          SELECT DISTINCT A.media_id, SocialMedia.media_name
+                          FROM SocialMedia
+                          JOIN Account A on SocialMedia.media_id = A.media_id
+                         WHERE A.customer_id = %s;
+                      """ % customer_id).all()
+
+    def add_customer_medias(self, customer_id, media_ids):
+        customer = self.get_customer(customer_id)
+
+        for media in media_ids:
+            media_id = self.session.query(SocialMedia).filter(
+                SocialMedia.media_id == media).one_or_none().media_id
+            self.session.add(Account(customer_id, media_id,
+                                     customer.password, customer.email,
+                                     datetime.now()))
+        self.session.commit()
 
     def search_1(self, author_id, mess_num, date_start, date_end):
         return self.engine.execute("""

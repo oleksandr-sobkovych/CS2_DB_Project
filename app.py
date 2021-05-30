@@ -79,6 +79,37 @@ def get_all_media():
     return jsonify({'status': 'ok', 'media': names})
 
 
+@APP.route("/choose_media", methods=["POST"])
+def add_medias():
+    """DB request for adding medias and creating accounts in them."""
+    customer_id = request.json.get('customer_id')
+    customer = DataStore.db.get_customer(customer_id)
+
+    # account = DataStore.db.get_account_by_customer_and_media()
+
+    if not customer:
+        return jsonify(
+            {'status': 'error', 'reason': 'author does not exist with this id'})
+    try:
+        DataStore.db.add_customer_medias(customer_id, request.json.get("chosen_media"))
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
+
+
+@APP.route("/give_access", methods=["POST"])
+def give_access():
+    """DB request for adding medias and creating accounts in them."""
+    try:
+        DataStore.db.create_access(
+            DataStore.db.get_account_by_customer_and_media(data.customer_id,
+                request.json.get("media")), request.json.get("author"),
+                request.json.get("duration_hours"))
+        return jsonify({'status': 'ok'})
+    except:
+        return jsonify({'status': 'error', 'reason': 'database error'})
+
+
 @APP.route("/customer_media", methods=["GET"])
 def get_customer_media():
     customer_id = request.args.get('customer_id')
@@ -89,13 +120,13 @@ def get_customer_media():
             {'status': 'error', 'reason': 'author does not exist with this id'})
 
     names = []
-    media = DataStore.db.get_networks()
+    media = DataStore.db.get_customer_media(customer_id)
+    print(media)
     for one_media in media:
-        if one_media.media_id in [m.media_id for m in customer.media]:
-            names.append({
-                'name': one_media.media_name,
-                'media_id': one_media.media_id,
-            })
+        names.append({
+            'name': one_media[1],
+            'media_id': one_media[0],
+        })
     return jsonify({'status': 'ok', 'media': names})
 
 
@@ -564,12 +595,8 @@ def create_author():
 
 @APP.route("/choose_styles", methods=["GET"])
 def choose_styles():
-    # http://127.0.0.1:8888/choose_styles
     """Page for choosing style and then seeing possible tasks
-
-    TODO:
-        !!!Seeing possible tasks
-        !!!Choose many styles
+    TODO: !!!Seeing possible tasks
     """
     return render_template("choose_styles.html")
 
@@ -582,17 +609,6 @@ def author_account_post():
     DataStore.db.add_skill(data.author_id, [style])
     return redirect("/author_account")
 
-
-# @APP.route("/task", methods=["GET", "POST"])
-# def task():
-#     """Page for author tasking doing"""
-#     return render_template("task.html")
-
-# @APP.route("/finishing_task", methods=["GET", "POST"])
-# def finishing_task():
-#     """Page for author tasking doing finish with buttom
-#     @Do yoou want to give some discount@"""
-#     return render_template("finishing_task.html")
 
 @APP.route("/author_account")
 def author_account():
@@ -733,7 +749,6 @@ def choose_author_styles():
 
 @APP.route("/customer_signup", methods=["GET"])
 def customer_signup():
-    # http://127.0.0.1:8888/customer_signup
     """Cusomer signup page"""
     return render_template("customer_singup.html")
 
@@ -772,70 +787,16 @@ def customer_account():
     return render_template("customer_account.html")
 
 
-# @APP.route("/add_styles", methods=["GET", "POST"])
-# def add_style():
-#     """Adding style"""
-#     return render_template("add_style.html")
-#
-# @APP.route("/add_social_media", methods=["GET", "POST"])
-# def add_style():
-#     """Adding media"""
-#     return render_template("add_social_media.html")
-#
-# @APP.route("/get_customer", methods=["GET", "POST"])
-# def get_customer():
-#     """Finding customer for order"""
-#     return render_template("get_customer.html")
-#
+@APP.route("/access")
+def access():
+    return render_template("access.html")
 
-#
+
 @APP.route("/create_order", methods=["GET"])
 def create_order():
     # http://127.0.0.1:8888/create_order
     """Creating order"""
     return render_template("create_order.html")
-
-
-@APP.route("/create_order", methods=["POST"])
-def order_creating():
-    # http://127.0.0.1:8888/create_order
-    """Creating order
-
-    !!!
-    TODO Зробити випадаючі списки
-        Додати поле інша інформація
-        кнопка "додати стиль
-    """
-    style = request.form.get("style")
-    team = request.form.get("team")
-    media = request.form.get("media")
-    print(style)
-    print(team)
-    print(media)
-    return redirect("/finish_author")
-
-#
-# @APP.route("/give_access", methods=["GET", "POST"])
-# def give_access():
-#     """Giving access"""
-#     return render_template("give_access.html")
-#
-# @APP.route("/deny_access", methods=["GET", "POST"])
-# def deny_access():
-#     """Denying access"""
-#     return render_template("deny_access.html")
-
-
-# @APP.route("/status_page", methods=["GET", "POST"])
-# def status_page():
-#     """Order status page with access buttoms, result and evaluating"""
-#     return render_template("status_page.html")
-#
-@APP.route("/finish_author", methods=["GET", "POST"])
-def finish_author():
-    # http://127.0.0.1:8888/finish_author
-    """Result page for discount creating"""
-    return render_template("finish_author.html")
 
 
 if __name__ == "__main__":

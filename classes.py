@@ -106,19 +106,16 @@ class Account(Base):
     account_id = Column(Integer, primary_key=True)
     customer_id = Column(Integer, ForeignKey('customer.customer_id'))
     media_id = Column(Integer, ForeignKey('socialmedia.media_id'))
-    style_id = Column(Integer, ForeignKey('messagestyle.style_id'))
     password = Column('password', String(20))
     username = Column('username', String(20))
     registration_date = Column('registration_date', DATE)
 
     customer = relationship("Customer")
     media = relationship("SocialMedia")
-    style = relationship("MessageStyle")
 
-    def __init__(self, customer_id, media_id, style_id, password, username, registration_date):
+    def __init__(self, customer_id, media_id, password, username, registration_date):
         self.customer_id = customer_id
         self.media_id = media_id
-        self.style_id = style_id
         self.password = password
         self.username = username
         self.registration_date = registration_date

@@ -247,3 +247,15 @@ a {
 	opacity: 0.7;
 	cursor: not-allowed;
 }
+
+.access-items li {
+	list-style-type: none;
+}
+
+.access-items button:first-child {
+	margin-left: 30px;
+}
+
+.access-items button {
+	padding: 10px;
+}
