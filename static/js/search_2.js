@@ -37,6 +37,9 @@ document.getElementById('search').addEventListener('click', async function(evt){
     // const num = document.getElementById('maxNum').value;
     const dateStart = document.getElementById('dateStart').value;
     const dateEnd = document.getElementById('dateEnd').value;
+    console.log(customerID)
+    console.log(dateStart)
+    console.log(dateEnd)
 
     let response = await fetch(`/search_results_2?customer_id=${customerID}&date_start=${dateStart}&date_end=${dateEnd}`);
     response = await response.json();

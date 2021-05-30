@@ -115,6 +115,9 @@ def search_results_1():
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
 
+    print(date_start)
+    print(date_end)
+
     if not (author_id and mess_num and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
@@ -144,7 +147,9 @@ def search_results_2():
     customer_id = request.args.get('customerID')
     date_start = request.args.get('dateStart')
     date_end = request.args.get('dateEnd')
-
+    print(customer_id)
+    print(date_start)
+    print(date_end)
     if not (customer_id and date_start and date_end):
         return jsonify({'status': 'error', 'reason': 'lacking parameters'})
 
@@ -158,7 +163,7 @@ def search_results_2():
 
     try:
         users = DataStore.db.search_2(customer_id,date_start,date_end)
-        return jsonify({'status': 'ok', 'users': users})
+        return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
     except:
         return jsonify({'status': 'error', 'reason': 'database error'})
 
