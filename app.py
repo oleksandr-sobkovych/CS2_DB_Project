@@ -493,8 +493,8 @@ def search_results_9():
     try:
         users = DataStore.db.search_9(author_id,num_authors, date_start,date_end)
         return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
-    except:
-        return jsonify({'status': 'error', 'reason': 'database error'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': e.args[0]})
 
 @APP.route("/search_10", methods=["GET"])
 def search_10():

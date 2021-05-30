@@ -34,12 +34,13 @@ class DBInteraction:
         return self.session.query(SocialMedia).all()
 
     def create_views(self):
+        self.views_exist = True
         return self.engine.execute("""
         CREATE OR REPLACE VIEW joined_orders AS
         SELECT po.order_id, t.*, po.message_id, po.created_date,
         c.first_name AS c_first_name, c.last_name AS c_last_name,
         a.author_id, a.first_name AS a_first_name, a.last_name AS a_last_name,
-        acc.*
+        acc.*, (SELECT COUNT(*) FROM AuthorTeam WHERE AuthorTeam.team_id = t.team_id) AS team_count
         FROM PlacedOrder po
         INNER JOIN Account acc USING (account_id)
         INNER JOIN Customer c USING (customer_id)
@@ -104,17 +105,25 @@ class DBInteraction:
         return cur_order
 
     def get_authors_from_team(self, team_id):
-        self.session.query(Team).join(Author, Team.authors)\
+        return self.session.query(Team).join((Author, Team.authors))\
             .filter(Team.team_id == team_id)\
             .with_entities(Author.author_id).all()
 
     def create_access(self, account_id, team_id, duration=36):
         author_ids = self.get_authors_from_team(team_id)
-        print('author_ids', author_ids)
         for author_id in author_ids:
-            cur_access = Access(account_id, author_id, datetime.now(),
+            cur_access = Access(account_id, author_id[0], datetime.now(),
                                 datetime.now() + timedelta(hours=duration))
             self.session.add(cur_access)
+        self.session.commit()
+
+    def deny_access(self, account_id, team_id):
+        author_ids = self.get_authors_from_team(team_id)
+        for author_id in author_ids:
+            cur_access = self.session.query(Access)\
+                .filter(Access.account_id == account_id,
+                        Access.author_id == author_id).one_or_none()
+            cur_access.access_terminated_date = datetime.now()
         self.session.commit()
 
     def get_account_by_customer_and_media(self, customer_id, media_id):
@@ -256,10 +265,12 @@ class DBInteraction:
 
     def search_9(self, author_id, num_authors, date_start,
                                       date_end):
+        if not self.views_exist:
+            self.create_views()
         return self.engine.execute("""
             SELECT media_id, COUNT(*) AS num_entries FROM joined_orders
             WHERE author_id = %s
-            AND created_date BETWEEN %s AND %s
+            AND (created_date BETWEEN date '%s' AND date '%s')
             GROUP BY media_id
             HAVING MIN(team_count) >= %s;
         """ % (author_id, date_start, date_end, num_authors)).all()
