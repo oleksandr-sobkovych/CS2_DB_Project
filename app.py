@@ -140,7 +140,7 @@ def give_access():
 
     try:
         access = DataStore.db.create_access(account_id, team_id)
-        return jsonify({'status': 'ok', 'access_id': access.access_id})
+        return jsonify({'status': 'ok'})
     except Exception as e:
         return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
 
@@ -162,7 +162,7 @@ def deny_access():
     team_id = order.team_id
 
     try:
-        access = DataStore.db.deny_access(account_id, team_id)
+        DataStore.db.deny_access(account_id, team_id)
         return jsonify({'status': 'ok'})
     except Exception as e:
         return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})

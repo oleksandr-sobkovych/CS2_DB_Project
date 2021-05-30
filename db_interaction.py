@@ -112,18 +112,24 @@ class DBInteraction:
     def create_access(self, account_id, team_id, duration=36):
         author_ids = self.get_authors_from_team(team_id)
         for author_id in author_ids:
-            cur_access = Access(account_id, author_id[0], datetime.now(),
-                                datetime.now() + timedelta(hours=duration))
-            self.session.add(cur_access)
+            if not self.session.query(Access)\
+                .filter(Access.account_id == account_id,
+                        Access.author_id == author_id[0]).all():
+                cur_access = Access(account_id, author_id[0], datetime.now(),
+                                    datetime.now() + timedelta(hours=duration))
+                self.session.add(cur_access)
         self.session.commit()
 
     def deny_access(self, account_id, team_id):
         author_ids = self.get_authors_from_team(team_id)
+        cancel_time = datetime.now().date()
         for author_id in author_ids:
-            cur_access = self.session.query(Access)\
+            cur_accesses = self.session.query(Access)\
                 .filter(Access.account_id == account_id,
-                        Access.author_id == author_id).one_or_none()
-            cur_access.access_terminated_date = datetime.now()
+                        Access.author_id == author_id[0]).all()
+            for cur_access in cur_accesses:
+                if cur_access.access_terminated_date > cancel_time:
+                    cur_access.access_terminated_date = cancel_time
         self.session.commit()
 
     def get_account_by_customer_and_media(self, customer_id, media_id):
