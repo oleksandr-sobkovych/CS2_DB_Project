@@ -255,15 +255,16 @@ class DBInteraction:
             GROUP BY messagestyle.style_name
         """ % (customer_id, date_start, date_end)).all()
 
-    def search_11(self):
+    def search_11(self, year):
         if not self.views_exist:
             self.create_views()
-        return self.engine.execute("""
-            SELECT EXTRACT(MONTH FROM created_date) AS month,
-            COUNT (*) AS num_orders
-            FROM joined_orders
-            GROUP BY month;
-        """).all()
+            return self.engine.execute("""
+                SELECT (
+                SELECT COUNT (*)
+                FROM joined_orders
+                WHERE (EXTRACT(YEAR FROM created_date)) = '%s'
+                GROUP BY (EXTRACT(MONTH FROM created_date)));
+                """ % year).all()
 
     def search_12(self, customer_id, date_start, date_end):
         return self.engine.execute("""

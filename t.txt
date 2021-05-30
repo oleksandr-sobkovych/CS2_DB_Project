@@ -1,0 +1,1125 @@
+diff --git a/__pycache__/classes.cpython-36.pyc b/__pycache__/classes.cpython-36.pyc
+index d5a12dc..a92f1bd 100644
+Binary files a/__pycache__/classes.cpython-36.pyc and b/__pycache__/classes.cpython-36.pyc differ
+diff --git a/__pycache__/db_interaction.cpython-36.pyc b/__pycache__/db_interaction.cpython-36.pyc
+index ba97999..392db44 100644
+Binary files a/__pycache__/db_interaction.cpython-36.pyc and b/__pycache__/db_interaction.cpython-36.pyc differ
+diff --git a/app.py b/app.py
+index c5f95f9..e74b3b6 100644
+--- a/app.py
++++ b/app.py
+@@ -52,7 +52,6 @@ def get_authors():
+         })
+     return jsonify({'status': 'ok', 'authors': names})
+ 
+-
+ @APP.route("/customers", methods=["GET"])
+ def get_customers():
+     # http://127.0.0.1:8888/authors
+@@ -79,69 +78,6 @@ def get_all_media():
+     return jsonify({'status': 'ok', 'media': names})
+ 
+ 
+-@APP.route("/choose_media", methods=["POST"])
+-def add_medias():
+-    """DB request for adding medias and creating accounts in them."""
+-    customer_id = request.json.get('customer_id')
+-    customer = DataStore.db.get_customer(customer_id)
+-
+-    # account = DataStore.db.get_account_by_customer_and_media()
+-
+-    if not customer:
+-        return jsonify(
+-            {'status': 'error', 'reason': 'author does not exist with this id'})
+-    try:
+-        DataStore.db.add_customer_medias(customer_id, request.json.get("chosen_media"))
+-        return jsonify({'status': 'ok'})
+-    except Exception as e:
+-        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
+-
+-
+-@APP.route("/give_access", methods=["POST"])
+-def give_access():
+-    """DB request for adding medias and creating accounts in them."""
+-    try:
+-        DataStore.db.create_access(
+-            DataStore.db.get_account_by_customer_and_media(data.customer_id,
+-                request.json.get("media")), request.json.get("author"),
+-                request.json.get("duration_hours"))
+-        return jsonify({'status': 'ok'})
+-    except:
+-        return jsonify({'status': 'error', 'reason': 'database error'})
+-
+-
+-@APP.route("/customer_media", methods=["GET"])
+-def get_customer_media():
+-    customer_id = request.args.get('customer_id')
+-    customer = DataStore.db.get_customer(customer_id)
+-
+-    if not customer:
+-        return jsonify(
+-            {'status': 'error', 'reason': 'author does not exist with this id'})
+-
+-    names = []
+-    media = DataStore.db.get_customer_media(customer_id)
+-    print(media)
+-    for one_media in media:
+-        names.append({
+-            'name': one_media[1],
+-            'media_id': one_media[0],
+-        })
+-    return jsonify({'status': 'ok', 'media': names})
+-
+-
+-@APP.route("/all_teams", methods=["GET"])
+-def get_all_teams():
+-    names = []
+-    teams = DataStore.db.get_teams()
+-    for team in teams:
+-        names.append({
+-            'name': team.team_name,
+-            'team_id': team.team_id,
+-        })
+-    return jsonify({'status': 'ok', 'teams': names})
+-
+-
+ @APP.route("/all_styles", methods=["GET"])
+ def get_all_styles():
+     names = []
+@@ -595,8 +531,12 @@ def create_author():
+ 
+ @APP.route("/choose_styles", methods=["GET"])
+ def choose_styles():
++    # http://127.0.0.1:8888/choose_styles
+     """Page for choosing style and then seeing possible tasks
+-    TODO: !!!Seeing possible tasks
++
++    TODO:
++        !!!Seeing possible tasks
++        !!!Choose many styles
+     """
+     return render_template("choose_styles.html")
+ 
+@@ -610,6 +550,17 @@ def author_account_post():
+     return redirect("/author_account")
+ 
+ 
++# @APP.route("/task", methods=["GET", "POST"])
++# def task():
++#     """Page for author tasking doing"""
++#     return render_template("task.html")
++
++# @APP.route("/finishing_task", methods=["GET", "POST"])
++# def finishing_task():
++#     """Page for author tasking doing finish with buttom
++#     @Do yoou want to give some discount@"""
++#     return render_template("finishing_task.html")
++
+ @APP.route("/author_account")
+ def author_account():
+     # http://127.0.0.1:8888/author_account
+@@ -749,6 +700,7 @@ def choose_author_styles():
+ 
+ @APP.route("/customer_signup", methods=["GET"])
+ def customer_signup():
++    # http://127.0.0.1:8888/customer_signup
+     """Cusomer signup page"""
+     return render_template("customer_singup.html")
+ 
+@@ -787,11 +739,23 @@ def customer_account():
+     return render_template("customer_account.html")
+ 
+ 
+-@APP.route("/access")
+-def access():
+-    return render_template("access.html")
+-
+-
++# @APP.route("/add_styles", methods=["GET", "POST"])
++# def add_style():
++#     """Adding style"""
++#     return render_template("add_style.html")
++#
++# @APP.route("/add_social_media", methods=["GET", "POST"])
++# def add_style():
++#     """Adding media"""
++#     return render_template("add_social_media.html")
++#
++# @APP.route("/get_customer", methods=["GET", "POST"])
++# def get_customer():
++#     """Finding customer for order"""
++#     return render_template("get_customer.html")
++#
++
++#
+ @APP.route("/create_order", methods=["GET"])
+ def create_order():
+     # http://127.0.0.1:8888/create_order
+@@ -799,6 +763,48 @@ def create_order():
+     return render_template("create_order.html")
+ 
+ 
++@APP.route("/create_order", methods=["POST"])
++def order_creating():
++    # http://127.0.0.1:8888/create_order
++    """Creating order
++
++    !!!
++    TODO Зробити випадаючі списки
++        Додати поле інша інформація
++        кнопка "додати стиль
++    """
++    style = request.form.get("style")
++    team = request.form.get("team")
++    media = request.form.get("media")
++    print(style)
++    print(team)
++    print(media)
++    return redirect("/finish_author")
++
++#
++# @APP.route("/give_access", methods=["GET", "POST"])
++# def give_access():
++#     """Giving access"""
++#     return render_template("give_access.html")
++#
++# @APP.route("/deny_access", methods=["GET", "POST"])
++# def deny_access():
++#     """Denying access"""
++#     return render_template("deny_access.html")
++
++
++# @APP.route("/status_page", methods=["GET", "POST"])
++# def status_page():
++#     """Order status page with access buttoms, result and evaluating"""
++#     return render_template("status_page.html")
++#
++@APP.route("/finish_author", methods=["GET", "POST"])
++def finish_author():
++    # http://127.0.0.1:8888/finish_author
++    """Result page for discount creating"""
++    return render_template("finish_author.html")
++
++
+ if __name__ == "__main__":
+     APP.run(debug=True, port=8888)
+ 
+diff --git a/classes.py b/classes.py
+index 2e512ab..25a3d9b 100644
+--- a/classes.py
++++ b/classes.py
+@@ -80,7 +80,6 @@ class Customer(Base):
+     customer_id = Column(Integer, primary_key=True)
+     first_name = Column('first_name', String(100))
+     last_name = Column('last_name', String(100))
+-    password = Column('password', String(20))
+     email = Column('email', String(320))
+ 
+     def __init__(self, first_name, last_name, password, email):
+@@ -94,7 +93,7 @@ class SocialMedia(Base):
+     __tablename__ = 'socialmedia'
+ 
+     media_id = Column(Integer, primary_key=True)
+-    media_name = Column('media_name', String(100))
++    media_name = Column('first_name', String(100))
+ 
+     def __init__(self, media_name):
+         self.media_name = media_name
+@@ -106,16 +105,19 @@ class Account(Base):
+     account_id = Column(Integer, primary_key=True)
+     customer_id = Column(Integer, ForeignKey('customer.customer_id'))
+     media_id = Column(Integer, ForeignKey('socialmedia.media_id'))
++    style_id = Column(Integer, ForeignKey('messagestyle.style_id'))
+     password = Column('password', String(20))
+     username = Column('username', String(20))
+     registration_date = Column('registration_date', DATE)
+ 
+     customer = relationship("Customer")
+     media = relationship("SocialMedia")
++    style = relationship("MessageStyle")
+ 
+-    def __init__(self, customer_id, media_id, password, username, registration_date):
++    def __init__(self, customer_id, media_id, style_id, password, username, registration_date):
+         self.customer_id = customer_id
+         self.media_id = media_id
++        self.style_id = style_id
+         self.password = password
+         self.username = username
+         self.registration_date = registration_date
+diff --git a/db_interaction.py b/db_interaction.py
+index bb4c5cb..3570d38 100644
+--- a/db_interaction.py
++++ b/db_interaction.py
+@@ -3,7 +3,7 @@ Main module to interact with the database
+ """
+ from sqlalchemy.orm import sessionmaker
+ from db_connect import engine
+-from classes import Author, MessageStyle, Discount, Customer, SocialMedia, Team, Access, Account, PlacedOrder
++from classes import Author, MessageStyle, Discount, Customer, SocialMedia
+ from datetime import timedelta, datetime
+ 
+ 
+@@ -69,13 +69,6 @@ class DBInteraction:
+         return self.session.query(Author).filter(Author.author_id ==
+                                                  author_id).one_or_none()
+ 
+-    def get_customer(self, customer_id):
+-        return self.session.query(Customer).filter(Customer.customer_id ==
+-                                                 customer_id).one_or_none()
+-
+-    def get_teams(self):
+-        return self.session.query(Team).all()
+-
+     def get_authors(self):
+         return self.session.query(Author).all()
+ 
+@@ -85,45 +78,6 @@ class DBInteraction:
+     def get_styles(self):
+         return self.session.query(MessageStyle).all()
+ 
+-    def create_order(self, account_id, team_id, msg_id):
+-        cur_order = PlacedOrder(account_id, team_id, msg_id, datetime.now())
+-        self.session.add(cur_order)
+-        self.session.commit()
+-
+-        return cur_order
+-
+-    def create_access(self, account_id, author_id, duration_hrs):
+-        cur_access = Access(account_id, author_id, datetime.now(),
+-                            datetime.now() + timedelta(hours=duration_hrs))
+-        self.session.add(cur_access)
+-        self.session.commit()
+-
+-        return cur_access
+-
+-    def get_account_by_customer_and_media(self, customer_id, media_id):
+-        return self.session.query(Account) \
+-            .filter(Account.customer_id == customer_id and
+-                    Account.media_id == media_id).one_or_none()
+-
+-    def get_customer_media(self, customer_id):
+-        return self.engine.execute("""
+-                          SELECT DISTINCT A.media_id, SocialMedia.media_name
+-                          FROM SocialMedia
+-                          JOIN Account A on SocialMedia.media_id = A.media_id
+-                         WHERE A.customer_id = %s;
+-                      """ % customer_id).all()
+-
+-    def add_customer_medias(self, customer_id, media_ids):
+-        customer = self.get_customer(customer_id)
+-
+-        for media in media_ids:
+-            media_id = self.session.query(SocialMedia).filter(
+-                SocialMedia.media_id == media).one_or_none().media_id
+-            self.session.add(Account(customer_id, media_id,
+-                                     customer.password, customer.email,
+-                                     datetime.now()))
+-        self.session.commit()
+-
+     def search_1(self, author_id, mess_num, date_start, date_end):
+         return self.engine.execute("""
+             SELECT CONCAT(cus.first_name, ' ', cus.last_name) as name from Customer cus
+@@ -255,15 +209,16 @@ class DBInteraction:
+             GROUP BY messagestyle.style_name
+         """ % (customer_id, date_start, date_end)).all()
+ 
+-    def search_11(self):
++    def search_11(self, year):    # TODO: check this query
+         if not self.views_exist:
+             self.create_views()
+         return self.engine.execute("""
+-            SELECT EXTRACT(MONTH FROM created_date) AS month,
+-            COUNT (*) AS num_orders
++            SELECT (
++                SELECT COUNT (*)
+             FROM joined_orders
+-            GROUP BY month;
+-        """).all()
++            WHERE (EXTRACT(YEAR FROM created_date)) = '%s'
++                GROUP BY (EXTRACT(MONTH FROM created_date)));
++        """ % year).all()
+ 
+     def search_12(self, customer_id, date_start, date_end):
+         return self.engine.execute("""
+@@ -286,17 +241,17 @@ class DBInteraction:
+             .filter(Author.email == email and
+                     Author.password == password).first()
+ 
+-    def add_skill(self, author_id, style_ids):
++    def add_skill(self, author_id, style_names):
+         author = self.get_author(author_id)
+ 
+-        for style_id in style_ids:
++        for style in style_names:
+             # select style from the database
+             selected_style = self.session.query(MessageStyle) \
+-                .filter(MessageStyle.style_id == style_id).all()
++                .filter(MessageStyle.style_name == style).all()
+ 
+             if not selected_style:
+                 # insert this style if it is absent
+-                selected_style = MessageStyle(style_id)
++                selected_style = MessageStyle(style)
+                 self.session.add(selected_style)
+             else:
+                 # select first occurrence
+diff --git a/static/css/style.css b/static/css/style.css
+index ac52ce7..a23dd61 100644
+--- a/static/css/style.css
++++ b/static/css/style.css
+@@ -43,7 +43,6 @@ a {
+ 	letter-spacing: 1px;
+ 	text-transform: uppercase;
+ 	transition: transform 80ms ease-in;
+-	cursor: pointer;
+ }
+ 
+ .custom-btn:active, #search:active {
+@@ -89,7 +88,7 @@ a {
+ 	min-height: 480px;
+ }
+ 
+-.custom-select, #select {
++#select {
+ 	background-color: #eee;
+     border: none;
+     padding: 12px 15px;
+@@ -236,7 +235,6 @@ a {
+ .inline-link {
+ 	width: 200px;
+ 	display: inline-block;
+-	cursor: pointer;
+ }
+ 
+ .mt-20 {
+@@ -247,15 +245,3 @@ a {
+ 	opacity: 0.7;
+ 	cursor: not-allowed;
+ }
+-
+-.access-items li {
+-	list-style-type: none;
+-}
+-
+-.access-items button:first-child {
+-	margin-left: 30px;
+-}
+-
+-.access-items button {
+-	padding: 10px;
+-}
+diff --git a/templates/access.html b/templates/access.html
+deleted file mode 100644
+index ebc3b39..0000000
+--- a/templates/access.html
++++ /dev/null
+@@ -1,78 +0,0 @@
+-<!DOCTYPE html>
+-<html>
+-    <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
+-    </head>
+-
+-    <body>
+-    <div class="container" id="container">
+-        <div class="form-container sign-in-container">
+-            <h1 class="heading">Доступ</h1>
+-            <ul class="access-items">
+-                <li>
+-                    Замовлення 23
+-                    <button type="button" class="custom-btn" id="signup">Надати доступ</button>
+-                    <button type="button" class="custom-btn" id="signup">Забрати доступ</button>
+-                </li>
+-                <li>
+-                    Замовлення 23
+-                    <button type="button" class="custom-btn" id="signup">Надати доступ</button>
+-                    <button type="button" class="custom-btn" id="signup">Забрати доступ</button>
+-                </li>
+-            </ul>
+-            <p id="message"></p>
+-            <a href="/customer_account" class="mt-20">Повернутися в аккаунт</a>
+-        </div>
+-    </div>
+-
+-    <script>
+-
+-    document.addEventListener("DOMContentLoaded", async function() {
+-        const x = document.getElementById("select");
+-        const author_id = localStorage.getItem('author_id');
+-        const response = await fetch('/author_styles?author_id=' + author_id);
+-        const data = await response.json();
+-
+-        const promise = new Promise((resolve, reject) => {
+-            resolve(data)
+-        });
+-
+-        data["styles"].forEach(style => {
+-            var option = document.createElement("option");
+-            option.text = style.name;
+-            option.setAttribute('id', style.style_id);
+-            x.add(option);
+-        });
+-    });
+-
+-    document.getElementById('signup').addEventListener('click', async function(evt){
+-        evt.preventDefault();
+-        const author_id = localStorage.getItem('author_id');
+-        const date_from = document.getElementById('date_from').value;
+-        const date_to = document.getElementById('date_to').value;
+-        const amount = document.getElementById('amount').value;
+-        const select = document.getElementById('select');
+-        const style_id = select.options[select.selectedIndex].getAttribute('id');
+-        document.getElementById('container').classList = 'container disabled';
+-
+-        let response = await fetch('/multiple_days_discount', {
+-            method: 'POST',
+-            headers: {
+-              'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify({author_id, date_from, date_to, amount, style_id})
+-        });
+-        response = await response.json();
+-        console.log(response);
+-        if (response.status === 'ok') {
+-            alert('Багатоденну знижку успішно створено!');
+-            window.location = 'author_account';
+-        } else {
+-            document.getElementById('container').classList = 'container';
+-            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+-        }
+-    });
+-
+-    </script>
+-    </body>
+-</html>
+diff --git a/templates/author_account.html b/templates/author_account.html
+index e63cd3a..b9de574 100644
+--- a/templates/author_account.html
++++ b/templates/author_account.html
+@@ -13,7 +13,6 @@
+                     <nav class="mt-20">
+                         <a href="one_day_discount" class="custom-link">Створити одноденну знижку</a>
+                         <a href="multiple_days_discount" class="custom-link">Створити багатоденну знижку</a>
+-                        <a href="choose_styles" class="custom-link">Змінити стилі</a>
+                         <a href="create_team" class="custom-link">Створити команду</a>
+ 
+                         <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+diff --git a/templates/author_signup.html b/templates/author_signup.html
+index 0ecd44d..c8d3418 100644
+--- a/templates/author_signup.html
++++ b/templates/author_signup.html
+@@ -43,7 +43,7 @@
+         console.log(response);
+         if (response.status === 'ok') {
+             localStorage.setItem('author_id', response.data.author_id);
+-            window.location = 'choose_styles';
++            window.location = 'author_account';
+         } else {
+             document.getElementById('container').classList = 'container';
+             document.getElementById('message').innerText = 'Error message: ' + response.reason;
+diff --git a/templates/choose_media.html b/templates/choose_media.html
+deleted file mode 100644
+index 5970595..0000000
+--- a/templates/choose_media.html
++++ /dev/null
+@@ -1,80 +0,0 @@
+-<!DOCTYPE html>
+-<html>
+-    <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
+-    </head>
+-
+-    <body>
+-    <div class="container" id="container">
+-        <div class="form-container sign-in-container">
+-            <h1 class="heading">Оберіть соцмережі, які Ви хочете підключити</h1>
+-            <form id="search-form" class="mt-20">
+-                <button type="button" class="custom-btn" id="continue">Зберегти та продовжити</button>
+-                <p id="message"></p>
+-                <a href="/customer_account" class="mt-20">Повернутися в аккаунт</a>
+-            </form>
+-        </div>
+-    </div>
+-
+-    <script>
+-
+-    document.addEventListener("DOMContentLoaded", async function() {
+-        const x = document.getElementById("search-form");
+-        const response = await fetch('/all_media');
+-        const data = await response.json();
+-
+-        const promise = new Promise((resolve, reject) => {
+-            resolve(data)
+-        });
+-
+-        data["media"].reverse().forEach(media => {
+-            var div = document.createElement("div");
+-            var input = document.createElement("input");
+-            input.setAttribute('type', 'checkbox');
+-            input.setAttribute('id', media.media_id);
+-            input.setAttribute('name', media.media_id);
+-            var label = document.createElement("label");
+-            label.setAttribute('for', media.media_id);
+-            label.textContent = media.name;
+-            div.prepend(label);
+-            div.prepend(input);
+-            x.prepend(div);
+-        });
+-    });
+-
+-    document.getElementById('continue').addEventListener('click', async function(evt){
+-        evt.preventDefault();
+-        const customer_id = localStorage.getItem('customer_id');
+-
+-        let radios = document.getElementsByTagName('input');
+-        let chosen_media = [];
+-        for (var i = 0; i < radios.length; i++) {
+-            if (radios[i].type === 'checkbox' && radios[i].checked) {
+-                chosen_media.push(radios[i].id);
+-            }
+-        }
+-
+-        console.log('chosen_media', chosen_media);
+-
+-        document.getElementById('container').classList = 'container disabled';
+-
+-        let response = await fetch('/choose_media', {
+-            method: 'POST',
+-            headers: {
+-              'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify({customer_id, chosen_media})
+-        });
+-        response = await response.json();
+-        console.log(response);
+-        if (response.status === 'ok') {
+-            window.location = 'customer_account';
+-        } else {
+-            document.getElementById('container').classList = 'container';
+-            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+-        }
+-    });
+-
+-    </script>
+-    </body>
+-</html>
+diff --git a/templates/choose_styles.html b/templates/choose_styles.html
+index 64175b1..7176a4c 100644
+--- a/templates/choose_styles.html
++++ b/templates/choose_styles.html
+@@ -1,80 +1,35 @@
+ <!DOCTYPE html>
+ <html>
+     <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
++        <link rel="stylesheet" href="../static/css/author_account.css">
+     </head>
+ 
+-    <body>
++
++
+     <div class="container" id="container">
+         <div class="form-container sign-in-container">
+-            <h1 class="heading">Оберіть стилі, у яких Ви хочете працювати</h1>
+-            <form id="search-form" class="mt-20">
+-                <button type="button" class="custom-btn" id="continue">Зберегти та продовжити</button>
+-                <p id="message"></p>
+-                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
++            <form method="POST">
++                <h1>HI</h1>
++
++                <h2>Choose a Style:</h2>
++
++                <select name="style" id="style">
++                    <option value="Happy">Happy</option>
++                    <option value="Political">Political</option>
++                    <option value="Official">Official</option>
++                </select>
++                
++                <nav>
++                    <input type="submit" value="Submit" id="submit">
++                    <!-- <a href="manage_task" class="ghost" id="Submit">Submit</a> -->
++                </nav>
+             </form>
+         </div>
+     </div>
+ 
+-    <script>
+-
+-    document.addEventListener("DOMContentLoaded", async function() {
+-        const x = document.getElementById("search-form");
+-        const response = await fetch('/all_styles');
+-        const data = await response.json();
+-
+-        const promise = new Promise((resolve, reject) => {
+-            resolve(data)
+-        });
+-
+-        data["styles"].reverse().forEach(style => {
+-            var div = document.createElement("div");
+-            var input = document.createElement("input");
+-            input.setAttribute('type', 'checkbox');
+-            input.setAttribute('id', style.style_id);
+-            input.setAttribute('name', style.style_id);
+-            var label = document.createElement("label");
+-            label.setAttribute('for', style.style_id);
+-            label.textContent = style.name;
+-            div.prepend(label);
+-            div.prepend(input);
+-            x.prepend(div);
+-        });
+-    });
+ 
+-    document.getElementById('continue').addEventListener('click', async function(evt){
+-        evt.preventDefault();
+-        const author_id = localStorage.getItem('author_id');
+-
+-        let radios = document.getElementsByTagName('input');
+-        let chosen_styles = [];
+-        for (var i = 0; i < radios.length; i++) {
+-            if (radios[i].type === 'checkbox' && radios[i].checked) {
+-                chosen_styles.push(radios[i].id);
+-            }
+-        }
+-
+-        console.log('chosen_styles', chosen_styles);
+-
+-        document.getElementById('container').classList = 'container disabled';
+-
+-        let response = await fetch('/choose_styles', {
+-            method: 'POST',
+-            headers: {
+-              'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify({author_id, chosen_styles})
+-        });
+-        response = await response.json();
+-        console.log(response);
+-        if (response.status === 'ok') {
+-            window.location = 'author_account';
+-        } else {
+-            document.getElementById('container').classList = 'container';
+-            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+-        }
+-    });
++    <body>
++    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/style_submit.js') }}"></script> -->
+ 
+-    </script>
+     </body>
+-</html>
++</html>
+\ No newline at end of file
+diff --git a/templates/create_order.html b/templates/create_order.html
+index d244d38..2491c82 100644
+--- a/templates/create_order.html
++++ b/templates/create_order.html
+@@ -1,112 +1,29 @@
+ <!DOCTYPE html>
+ <html>
+     <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
++        <link rel="stylesheet" href="../static/css/author_login.css">
+     </head>
+ 
+-    <body>
++
++
+     <div class="container" id="container">
+         <div class="form-container sign-in-container">
+-            <h1 class="heading">Створити замовлення</h1>
+-            <form id="search-form" class="mt-20">
+-                <select id="select_style" class="custom-select">
+-                    <option selected="selected" disabled>Стиль повідомлення</option>
+-                </select>
+-                <select id="select_team" class="custom-select">
+-                    <option selected="selected" disabled>Команда авторів</option>
+-                </select>
+-                <select id="select_media" class="custom-select">
+-                    <option selected="selected" disabled>Соцмережа</option>
+-                </select>
+-
+-                <button type="button" class="custom-btn" id="create">Створити замовлення</button>
+-                <p id="message"></p>
+-                <a href="/customer_account" class="mt-20">Повернутися в аккаунт</a>
++            <form method="POST">
++                <h1>Create Order</h1>
++                <input  placeholder="Message Style" name="style"/>
++                <input  placeholder="Team Name" name="team"/>
++                <input  placeholder="Social Media" name="media"/>
++                <nav>
++                    <input type="submit" value="Submit" >
++                    <!--<a href="finish_author" class="ghost" id="signIn">Create</a>-->
++                </nav>
+             </form>
+         </div>
+     </div>
+ 
+-    <script>
+-
+-    document.addEventListener("DOMContentLoaded", async function() {
+-        // Add styles
+-        let x = document.getElementById("select_style");
+-        let response = await fetch('/all_styles');
+-        let data = await response.json();
+-
+-        let promise = new Promise((resolve, reject) => {
+-            resolve(data)
+-        });
+-
+-        data["styles"].forEach(style => {
+-            var option = document.createElement("option");
+-            option.text = style.name;
+-            option.setAttribute('id', style.style_id);
+-            x.add(option);
+-        });
+-
+-        // Add team
+-        x = document.getElementById("select_team");
+-        response = await fetch('/all_teams');
+-        data = await response.json();
+ 
+-        promise = new Promise((resolve, reject) => {
+-            resolve(data)
+-        });
+-
+-        data["teams"].forEach(team => {
+-            var option = document.createElement("option");
+-            option.text = team.name;
+-            option.setAttribute('id', team.team_id);
+-            x.add(option);
+-        });
+-
+-        // Add social media
+-        const customer_id = localStorage.getItem('customer_id');
+-        x = document.getElementById("select_media");
+-        response = await fetch('/customer_media?customer_id=' + customer_id);
+-        data = await response.json();
+-
+-        promise = new Promise((resolve, reject) => {
+-            resolve(data)
+-        });
+-
+-        data["media"].forEach(media => {
+-            var option = document.createElement("option");
+-            option.text = media.name;
+-            option.setAttribute('id', media.media_id);
+-            x.add(option);
+-        });
+-    });
+-
+-    document.getElementById('create').addEventListener('click', async function(evt){
+-        evt.preventDefault();
+-        const author_id = localStorage.getItem('author_id');
+-        const date_from = document.getElementById('date_from').value;
+-        const date_to = document.getElementById('date_to').value;
+-        const amount = document.getElementById('amount').value;
+-        const select = document.getElementById('select');
+-        const style_id = select.options[select.selectedIndex].getAttribute('id');
+-        document.getElementById('container').classList = 'container disabled';
+-
+-        let response = await fetch('/multiple_days_discount', {
+-            method: 'POST',
+-            headers: {
+-              'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify({author_id, date_from, date_to, amount, style_id})
+-        });
+-        response = await response.json();
+-        console.log(response);
+-        if (response.status === 'ok') {
+-            alert('Багатоденну знижку успішно створено!');
+-            window.location = 'author_account';
+-        } else {
+-            document.getElementById('container').classList = 'container';
+-            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+-        }
+-    });
++    <body>
++    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>-->
+ 
+-    </script>
+     </body>
+-</html>
++</html>
+\ No newline at end of file
+diff --git a/templates/customer_account.html b/templates/customer_account.html
+index ad2a6c8..e25f94b 100644
+--- a/templates/customer_account.html
++++ b/templates/customer_account.html
+@@ -1,34 +1,35 @@
+ <!DOCTYPE html>
+ <html>
+     <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
++        <link rel="stylesheet" href="../static/css/author_account.css">
+     </head>
+ 
+-    <body>
+-        <div class="container" id="container">
+-            <div class="form-container sign-in-container">
+-                    <h1 id="welcome-msg"></h1>
+-                    <p id="id-info">Ваш айді</p>
+-
+-                    <nav class="mt-20">
+-                        <a href="create_order" class="custom-link">Створити замовлення</a>
+-                        <a href="choose_media" class="custom-link">Змінити підключені соцмережі</a>
+-                        <a href="access" class="custom-link">Надати доступ</a>
+-
+-                        <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+-                    </nav>
+-            </div>
++
++
++    <div class="container" id="container">
++        <div class="form-container sign-in-container">
++            <form action="">
++                <h1>HI</h1>
++
++                <h2>Choose Social Medias:</h2>
++
++                <select class="style" name="style" id="style" multiple>
++                    <option value="Facebook">Facebook</option>
++                    <option value="Instagram">Instagram</option>
++                    <option value="Twitter">Twitter</option>
++                </select>
++                
++                <nav>
++                    <!-- <input type="submit" value="Submit"> -->
++                    <a href="user_space" class="ghost" id="Submit">Submit</a>
++                </nav>
++            </form>
+         </div>
++    </div>
++
++
++    <body>
++    <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>
+ 
+-    <script>
+-        document.addEventListener("DOMContentLoaded", async function() {
+-            const customer_id = localStorage.getItem('customer_id');
+-            console.log('customer_id', customer_id);
+-            let response = await fetch(`/get_customer_by_id?customer_id=${customer_id}`);
+-            response = await response.json();
+-            document.getElementById('welcome-msg').innerText = `Ласкаво просимо, ${response.data.name}`;
+-            document.getElementById('id-info').innerText = `Ваш айді - ${response.data.author_id}`;
+-        })
+-    </script>
+     </body>
+-</html>
++</html>
+\ No newline at end of file
+diff --git a/templates/customer_login.html b/templates/customer_login.html
+index 2e0e925..88ca574 100644
+--- a/templates/customer_login.html
++++ b/templates/customer_login.html
+@@ -1,50 +1,29 @@
+ <!DOCTYPE html>
+ <html>
+     <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
++        <link rel="stylesheet" href="../static/css/author_login.css">
+     </head>
+ 
+-    <body>
++
++
+     <div class="container" id="container">
+         <div class="form-container sign-in-container">
+-            <form id="search-form">
+-                <h1 class="heading">Увійти як клієнт</h1>
+-                <input type="email" class="param-input mt-20" placeholder="Електронна пошта" id="email" value="yev@ucu.edu.ua"/>
+-                <input type="password" class="param-input" placeholder="Пароль" id="password" value="12345"/>
+-
+-                <button type="button" class="custom-btn" id="login">Увійти</button>
+-                <p id="message"></p>
+-                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
++            <form method="POST">
++                <h1>Sign in</h1>
++                <input type="email" placeholder="Email" />
++                <input type="password" placeholder="Password" />
++                <nav>
++                    <input type="submit" value="Submit" >
++                    <!--<a href="customer_account" class="ghost" id="signIn">Sign In</a>-->
++                </nav>
+             </form>
+         </div>
+     </div>
+ 
+-    <script>
+ 
+-    document.getElementById('login').addEventListener('click', async function(evt){
+-        evt.preventDefault();
+-        const email = document.getElementById('email').value;
+-        const password = document.getElementById('password').value;
+-        document.getElementById('container').classList = 'container disabled';
++    <body>
+ 
+-        let response = await fetch('/customer_login', {
+-            method: 'POST',
+-            headers: {
+-              'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify({email, password})
+-        });
+-        response = await response.json();
+-        console.log(response);
+-        if (response.status === 'ok') {
+-            localStorage.setItem('customer_id', response.data.customer_id);
+-            window.location = 'customer_account';
+-        } else {
+-            document.getElementById('container').classList = 'container';
+-            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+-        }
+-    });
++    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>-->
+ 
+-    </script>
+     </body>
+-</html>
++</html>
+\ No newline at end of file
+diff --git a/templates/customer_singup.html b/templates/customer_singup.html
+index cb4b944..d2e15d5 100644
+--- a/templates/customer_singup.html
++++ b/templates/customer_singup.html
+@@ -1,55 +1,30 @@
+ <!DOCTYPE html>
+ <html>
+     <head>
+-        <link rel="stylesheet" href="../static/css/style.css">
++        <link rel="stylesheet" href="../static/css/author_login.css">
+     </head>
+ 
+-    <body>
+-    <div class="container" id="container">
+-        <div class="form-container sign-in-container">
+-            <form id="search-form">
+-                <h1 class="heading">Створити аккаунт клієнта</h1>
+-                <input type="text" class="param-input mt-20" placeholder="Ім'я" id="name"/>
+-                <input type="text" class="param-input" placeholder="Прізвище" id="surname"/>
+-                <input type="email" class="param-input" placeholder="Електронна пошта" id="email"/>
+-                <input type="password" class="param-input" placeholder="Пароль" id="password"/>
+ 
+-                <button type="button" class="custom-btn" id="signup">Зареєструватися</button>
+-                <p id="message"></p>
+-                <a href="/" class="mt-20">Повернутися на головну сторінку</a>
+ 
++    <div class="container" id="container">
++        <div class="form-container sign-in-container">
++            <form method="POST">
++                <h1>Sign Up</h1>
++                <input type="name" placeholder="Name" name="name" />
++                <input type="surname" placeholder="Surname" name="surname" />
++                <input type="email" placeholder="Email" />
++                <input type="password" placeholder="Password" />
++                <nav>
++                    <input type="submit" value="Submit" >
++                    <!--<a href="customer_account" class="ghost" id="signIn">Sign In</a>-->
++                </nav>
+             </form>
+         </div>
+     </div>
+ 
+-    <script>
+-
+-    document.getElementById('signup').addEventListener('click', async function(evt){
+-        evt.preventDefault();
+-        const name = document.getElementById('name').value;
+-        const surname = document.getElementById('surname').value;
+-        const email = document.getElementById('email').value;
+-        const password = document.getElementById('password').value;
+-        document.getElementById('container').classList = 'container disabled';
+ 
+-        let response = await fetch('/customer_signup', {
+-            method: 'POST',
+-            headers: {
+-              'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify({name, surname, email, password})
+-        });
+-        response = await response.json();
+-        console.log(response);
+-        if (response.status === 'ok') {
+-            localStorage.setItem('customer_id', response.customer_id);
+-            window.location = 'customer_account';
+-        } else {
+-            document.getElementById('container').classList = 'container';
+-            document.getElementById('message').innerText = 'Error message: ' + response.reason;
+-        }
+-    });
++    <body>
++    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>-->
+ 
+-    </script>
+     </body>
+-</html>
++</html>
+\ No newline at end of file
+diff --git a/templates/finish_author.html b/templates/finish_author.html
+new file mode 100644
+index 0000000..4bce132
+--- /dev/null
++++ b/templates/finish_author.html
+@@ -0,0 +1,25 @@
++<!DOCTYPE html>
++<html>
++    <head>
++        <link rel="stylesheet" href="../static/css/finish_author.css">
++    </head>
++
++
++
++    <div class="container" id="container">
++        <div class="form-container sign-in-container">
++            
++            <h1>All Done</h1>
++            <nav>
++                <a href="/" class="finish" id="finish">Finish</a>
++            </nav>
++            
++        </div>
++    </div>
++
++
++    <body>
++    <script type="text/javascript" src="{{ url_for('static', filename='js/style_submit.js') }}"></script>
++
++    </body>
++</html>
+\ No newline at end of file
+diff --git a/templates/user_space.html b/templates/user_space.html
+new file mode 100644
+index 0000000..fb872c0
+--- /dev/null
++++ b/templates/user_space.html
+@@ -0,0 +1,27 @@
++<!DOCTYPE html>
++<html>
++    <head>
++        <link rel="stylesheet" href="../static/css/manage_task.css">
++    </head>
++
++
++
++    <div class="container" id="container">
++        <div class="form-container sign-in-container">
++            <form action="">
++                
++                <nav>
++                    <a href="create_order" class="discount" id="discount">Create an Order</a>
++                    <a href="past_orders" class="team" id="team">Past Orders</a>
++                </nav>
++                
++            </form>
++        </div>
++    </div>
++
++
++    <body>
++    <script type="text/javascript" src="{{ url_for('static', filename='js/author_login.js')}}"></script>
++
++    </body>
++</html>
+\ No newline at end of file
