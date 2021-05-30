@@ -43,7 +43,7 @@
         console.log(response);
         if (response.status === 'ok') {
             localStorage.setItem('customer_id', response.customer_id);
-            window.location = 'customer_account';
+            window.location = 'choose_media';
         } else {
             document.getElementById('container').classList = 'container';
             document.getElementById('message').innerText = 'Error message: ' + response.reason;

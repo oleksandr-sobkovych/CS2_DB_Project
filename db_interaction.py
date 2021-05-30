@@ -34,7 +34,7 @@ class DBInteraction:
         return self.session.query(SocialMedia).all()
 
     def create_views(self):
-        self.views_exist = True
+        # self.views_exist = True
         return self.engine.execute("""
         CREATE OR REPLACE VIEW joined_orders AS
         SELECT po.order_id, t.*, po.message_id, po.created_date,

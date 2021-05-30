@@ -534,6 +534,9 @@ def search_results_11():
     year = request.args.get('year')
 
     users = DataStore.db.search_11(year)
+    print(users)
+    if not users:
+        return jsonify({'status': 'ok', 'users': []})
     return jsonify({'status': 'ok', 'users': [dict(user) for user in users]})
 
 @APP.route("/search_12", methods=["GET"])
