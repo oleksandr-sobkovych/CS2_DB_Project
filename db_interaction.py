@@ -69,9 +69,20 @@ class DBInteraction:
         return self.session.query(Author).filter(Author.author_id ==
                                                  author_id).one_or_none()
 
+    def get_order(self, order_id):
+        return self.session.query(PlacedOrder).filter(PlacedOrder.order_id == order_id).one()
+
+    def get_account(self, account_id):
+        return self.session.query(Account).filter(Account.account_id ==
+                                                 account_id).one_or_none()
+
     def get_customer(self, customer_id):
         return self.session.query(Customer).filter(Customer.customer_id ==
                                                  customer_id).one_or_none()
+
+    def get_orders_of(self, customer_id):
+        return self.session.query(PlacedOrder).join(Account).filter(
+            Account.customer_id == customer_id).all()
 
     def get_teams(self):
         return self.session.query(Team).all()
@@ -92,13 +103,19 @@ class DBInteraction:
 
         return cur_order
 
-    def create_access(self, account_id, author_id, duration_hrs):
-        cur_access = Access(account_id, author_id, datetime.now(),
-                            datetime.now() + timedelta(hours=duration_hrs))
-        self.session.add(cur_access)
-        self.session.commit()
+    def get_authors_from_team(self, team_id):
+        self.session.query(Team).join(Author)\
+            .filter(Team.team_id == team_id)\
+            .with_entities(Author.author_id).all()
 
-        return cur_access
+    def create_access(self, account_id, team_id, duration=36):
+        author_ids = self.get_authors_from_team(team_id)
+
+        for author_id in author_ids:
+            cur_access = Access(account_id, author_id, datetime.now(),
+                                datetime.now() + timedelta(hours=duration))
+            self.session.add(cur_access)
+        self.session.commit()
 
     def get_account_by_customer_and_media(self, customer_id, media_id):
         return self.session.query(Account)\

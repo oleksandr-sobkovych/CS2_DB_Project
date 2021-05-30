@@ -248,14 +248,14 @@ a {
 	cursor: not-allowed;
 }
 
-.access-items li {
+#access-items li {
 	list-style-type: none;
 }
 
-.access-items button:first-child {
+#access-items button:first-child {
 	margin-left: 30px;
 }
 
-.access-items button {
+#access-items button {
 	padding: 10px;
 }

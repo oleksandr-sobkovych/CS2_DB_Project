@@ -89,7 +89,7 @@ def add_medias():
 
     if not customer:
         return jsonify(
-            {'status': 'error', 'reason': 'author does not exist with this id'})
+            {'status': 'error', 'reason': 'customer does not exist with this id'})
     try:
         DataStore.db.add_customer_medias(customer_id, request.json.get("chosen_media"))
         return jsonify({'status': 'ok'})
@@ -97,17 +97,53 @@ def add_medias():
         return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
 
 
+@APP.route("/get_orders", methods=["GET"])
+def get_orders():
+    customer_id = request.args.get('customer_id')
+    customer = DataStore.db.get_customer(customer_id)
+
+    if not customer:
+        return jsonify(
+            {'status': 'error', 'reason': 'customer does not exist with this id'})
+
+    try:
+        orders = DataStore.db.get_orders_of(customer_id)
+        data = []
+        for order in orders:
+            data.append({
+                'order_id': order.order_id,
+                'account_id': order.account_id,
+                'team_id': order.team_id,
+                'message_id': order.message_id
+            })
+        return jsonify({'status': 'ok', 'data': data})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
+
+
 @APP.route("/give_access", methods=["POST"])
 def give_access():
     """DB request for adding medias and creating accounts in them."""
+    customer_id = request.args.get('customer_id')
+    customer = DataStore.db.get_customer(customer_id)
+    order_id = request.json.get("order_id")
+
+    order = DataStore.db.get_order(order_id)
+
+    if not order:
+        return jsonify(
+            {'status': 'error',
+             'reason': 'order does not exist with this id'})
+
+    account_id = order.account_id
+    media_id = DataStore.db.get_account(account_id).media_id
+    team_id = order.team_id
+
     try:
-        DataStore.db.create_access(
-            DataStore.db.get_account_by_customer_and_media(data.customer_id,
-                request.json.get("media")), request.json.get("author"),
-                request.json.get("duration_hours"))
-        return jsonify({'status': 'ok'})
-    except:
-        return jsonify({'status': 'error', 'reason': 'database error'})
+        access = DataStore.db.create_access(account_id, team_id)
+        return jsonify({'status': 'ok', 'access_id': access.access_id})
+    except Exception as e:
+        return jsonify({'status': 'error', 'reason': 'database error: ' + str(e)})
 
 
 @APP.route("/customer_media", methods=["GET"])
@@ -713,6 +749,7 @@ def create_order_post():
         return jsonify({'status': 'error', 'reason': 'no parameters'})
 
     account = DataStore.db.get_account_by_customer_and_media(int(customer_id), int(media_id))
+
     try:
         order = DataStore.db.create_order(account.account_id, team_id, style_id)
     except AttributeError:
