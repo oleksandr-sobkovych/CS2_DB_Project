@@ -254,10 +254,15 @@ class DBInteraction:
                customer_id, author_id,
                date_start, date_end, date_start, date_end)).all()
 
-    def search_9(self, customer_id):    # TODO: write this query
+    def search_9(self, author_id, num_authors, date_start,
+                                      date_end):
         return self.engine.execute("""
-        
-        """ % customer_id).all()
+            SELECT media_id, COUNT(*) AS num_entries FROM joined_orders
+            WHERE author_id = %s
+            AND created_date BETWEEN %s AND %s
+            GROUP BY media_id
+            HAVING MIN(team_count) >= %s;
+        """ % (author_id, date_start, date_end, num_authors)).all()
 
     def search_10(self, customer_id, date_start, date_end):    # TODO: check this query
         return self.engine.execute("""
